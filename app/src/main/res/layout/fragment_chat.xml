@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChatFragment">
+
+    <Button
+        android:id="@+id/contact1"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginTop="100dp"
+        android:drawableLeft="@drawable/baseline_perm_identity_black_18dp"
+        android:drawableRight="@drawable/baseline_lock_black_18dp"
+        android:padding="16dp"
+        android:text="Sandra"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/contact2"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginTop="200dp"
+        android:drawableLeft="@drawable/baseline_perm_identity_black_18dp"
+        android:drawableRight="@drawable/baseline_lock_open_black_18dp"
+        android:padding="16dp"
+        android:text="Jerry"
+        android:textSize="18sp" />
+
+</FrameLayout>

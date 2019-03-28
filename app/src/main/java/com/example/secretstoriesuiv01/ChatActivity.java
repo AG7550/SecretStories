@@ -1,0 +1,25 @@
+package com.example.secretstoriesuiv01;
+
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
+import android.widget.TextView;
+
+/**
+ * A chat screen that shows messages and allows for writing them.
+ */
+public class ChatActivity extends AppCompatActivity {
+
+    private TextView mTextMessage;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chat);
+
+        mTextMessage = (TextView) findViewById(R.id.message);
+    }
+
+}
