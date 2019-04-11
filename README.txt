@@ -34,7 +34,7 @@ Here user information can be entered. Currently this information is not stored. 
 
 If the projects folders do not sort themselves properly: 
 1. Press "Clean Project", Build -> Clean Project.  
-2. Press"Sync Project with Gradle Files" in the top right corner. 
+2. Press "Sync Project with Gradle Files" in the top right corner. 
 3. If problem is still not solved, press "Rebuild Project", Build -> Rebuild Project
 4. If the problem persists try removing the project, placing the project folder into a different 
 directory. Now try opening it with  "Open an existing Android Studio Project" from the Android Studio 
