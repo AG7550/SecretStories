@@ -1,12 +1,24 @@
 package com.example.secretstoriesuiv01;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -25,10 +37,15 @@ public class ChatFragment extends Fragment {
 
     // TODO: Rename and change types of parameters
     private String mParam1;
-    private String mParam2;
-
+    public static String[] namesList;
+    private static ArrayList<String> chat;
     private OnFragmentInteractionListener mListener;
+    public static ArrayAdapter<String> nameAdapter;
+    public static ListView lvwUsers;
+    public static void setChat(ArrayList<String> chat1){
+        chat = chat1;
 
+    }
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -38,15 +55,14 @@ public class ChatFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment ChatFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ChatFragment newInstance(String param1, String param2) {
+    public static ChatFragment newInstance(String param1, String[] names) {
         ChatFragment fragment = new ChatFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        namesList = names;
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,15 +72,40 @@ public class ChatFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false);
+        View v = inflater.inflate(R.layout.fragment_chat2, container, false);
+        String[] names = namesList;
+        nameAdapter = new CustomAdapter(getActivity(), names, new BtnClickListener() {
+            public void onBtnClick(int position, String members) {
+                ArrayList<String> chatMembers = new ArrayList<String>();
+                String[] temp = members.split(", ");
+                for (String name : temp){
+                    chatMembers.add(name);
+                }
+                if(LoginActivity.client != null){
+                    chatMembers.add(LoginActivity.client.getUsername());
+                    Conversations convo = new Conversations(position, chatMembers, null);
+                    LoginActivity.client.getChat(convo);
+                }
+                else{
+                    chatMembers.add(CreateAccountActivity.client.getUsername());
+                    Conversations convo = new Conversations(position, chatMembers, null);
+                    CreateAccountActivity.client.getChat(convo);
+                }
+            }
+        });
+        lvwUsers = v.findViewById(R.id.lvwUsers);
+        lvwUsers.setAdapter(nameAdapter);
+
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -84,6 +125,9 @@ public class ChatFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+    public static void updateAdapter(ArrayAdapter<String> adapter){
+        adapter.notifyDataSetChanged();
+    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -98,5 +142,10 @@ public class ChatFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public static void setListEnable(Boolean bol){
+        lvwUsers.setClickable(false);
+        lvwUsers.setEnabled(false);
     }
 }
