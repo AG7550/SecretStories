@@ -1,12 +1,21 @@
 package com.example.secretstoriesuiv01;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.List;
 
 
 /**
@@ -25,7 +34,7 @@ public class ChatFragment extends Fragment {
 
     // TODO: Rename and change types of parameters
     private String mParam1;
-    private String mParam2;
+    private static String[] namesList;
 
     private OnFragmentInteractionListener mListener;
 
@@ -38,15 +47,14 @@ public class ChatFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment ChatFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ChatFragment newInstance(String param1, String param2) {
+    public static ChatFragment newInstance(String param1, String[] names) {
         ChatFragment fragment = new ChatFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        namesList = names;
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,15 +64,39 @@ public class ChatFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false);
+        View v = inflater.inflate(R.layout.fragment_chat2, container, false);
+        String[] names = namesList;
+        ArrayAdapter<String> nameAdapter = new CustomAdapter(getActivity(), names, new BtnClickListener() {
+            @Override
+            public void onBtnClick(int position) {
+                startActivity(new Intent(getContext(), ChattingActivity.class));
+            }
+        });
+        ListView lvwUsers = (ListView) v.findViewById(R.id.lvwUsers);
+        lvwUsers.setAdapter(nameAdapter);
+
+    //    lvwUsers.setOnItemClickListener(
+   //             new AdapterView.OnItemClickListener(){
+  //                  @Override
+  //                  public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+   //                     Toast.makeText(getActivity(), "Detta funkar!", Toast.LENGTH_LONG).show();
+  //                      startActivity(new Intent(getContext(), ChattingActivity.class));
+  //                  }
+   //             }
+  //      );
+
+
+
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
