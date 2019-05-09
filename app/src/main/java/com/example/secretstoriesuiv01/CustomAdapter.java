@@ -14,6 +14,7 @@ import org.w3c.dom.Text;
 
 public class CustomAdapter extends ArrayAdapter<String> {
     private BtnClickListener mClickListener = null;
+
     CustomAdapter(Context context, String[] names, BtnClickListener listener){
         super(context, R.layout.custom_row, names);
         this.mClickListener = listener;
@@ -24,16 +25,16 @@ public class CustomAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater nameInflator = LayoutInflater.from(getContext());
-        View customView =nameInflator.inflate(R.layout.custom_row, parent, false);
+        View customView = nameInflator.inflate(R.layout.custom_row, parent, false);
         String name = getItem(position);
-        Button btnName = (Button) customView.findViewById(R.id.btnContact);
+        final Button btnName = (Button) customView.findViewById(R.id.btnContact);
         btnName.setTag(position);
         btnName.setText(name);
         btnName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mClickListener != null){
-                    mClickListener.onBtnClick((Integer) v.getTag());
+                    mClickListener.onBtnClick((Integer) v.getTag(), (String) btnName.getText());
                 }
             }
         });

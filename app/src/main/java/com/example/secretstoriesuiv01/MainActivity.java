@@ -64,6 +64,21 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
+            Button createChatbtn = (Button) findViewById(R.id.writemessagebutton);
+            createChatbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // skicka till client som skickar till server. När client tar emot så ska den starta aktiviten nedan men först ge datan i kunstruktorn
+                    if(LoginActivity.client != null){
+                        LoginActivity.client.getAllUsers(v.getContext());
+                    }
+                    else{
+                        CreateAccountActivity.client.getAllUsers(v.getContext());
+                    }
+
+                }
+            });
+
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_layout, ChatFragment.newInstance("CHANGE THIS",  names));
             transaction.commit();
@@ -83,7 +98,15 @@ public class MainActivity extends AppCompatActivity {
     public static void setNames(ArrayList<String> list){
         names = new String[list.size()];
         for(int i = 0; i<names.length; i++){
-            names[i] = list.get(i);
+            String tempName = "";
+            String[] temp = list.get(i).split(":");
+            for(String name : temp){
+                String attach = name;
+                if(!attach.isEmpty()) {
+                    tempName += attach + ", ";
+                }
+            }
+            names[i] = tempName.substring(0, tempName.length() - 2);
         }
     }
 

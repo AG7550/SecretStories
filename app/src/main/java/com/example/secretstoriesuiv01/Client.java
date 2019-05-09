@@ -1,11 +1,14 @@
 package com.example.secretstoriesuiv01;
 
 import android.app.ActionBar;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -23,6 +26,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Observable;
 
 public class Client extends AppCompatActivity {
 	private Socket socketClient;
@@ -33,14 +37,17 @@ public class Client extends AppCompatActivity {
 	private User user;
 	private Context contextClient;
 	private Context activityContext;
+
 	
 	public Client(int port, String ip) {
 		this.port = port;
 		this.ip = ip;
+
 	}
 	
 	public void connect(Context context) {
 		activityContext = context;
+
 //		try {
 //			socketClient = new Socket(ip,port);
 //			output = new ObjectOutputStream(socketClient.getOutputStream());
@@ -61,6 +68,10 @@ public class Client extends AppCompatActivity {
 
 
 	}
+	public void setUser(User user){
+		this.user = user;
+	}
+
 	public void createUser(User user) {
 //		try {
 //			output.writeObject(user);
@@ -72,6 +83,13 @@ public class Client extends AppCompatActivity {
 
 		try{
 			new CreateUserTask(user).execute();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	public void sendMessage(Message message){
+		try{
+			new SendMessageTask(message).execute();
 		} catch (Exception e){
 			e.printStackTrace();
 		}
@@ -88,6 +106,24 @@ public class Client extends AppCompatActivity {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
+	}
+	public void getChat(Conversations convo){
+		try{
+			new SendConversationTask(convo).execute();
+		}
+		catch(Exception e){e.printStackTrace();}
+	}
+
+	public void getAllUsers(Context context){
+		try{
+			new GetAllUsersTask().execute();
+		}catch(Exception e){e.printStackTrace();}
+	}
+
+	public void createChat(NewChatInfo chatInfo){
+		try{
+			new CreateChatTask(chatInfo).execute();
+		}catch(Exception e){e.printStackTrace();}
 	}
 
 	/**
@@ -116,14 +152,24 @@ public class Client extends AppCompatActivity {
 	 * 	}
 	 */
 
-	private class Listener extends Thread{
+	private class Listener extends Thread {
+		Intent chatIntent = new Intent(activityContext, ChattingActivity.class);
 		public void run() {
 		Object response;
 		try {
 			while(true) {
 				response = (Object) input.readObject();
 				if(response instanceof Message) {
-					Message message = (Message) response;
+					final Message message = (Message) response;
+					runOnUiThread(new Runnable(){
+
+						@Override
+						public void run() {
+							ChattingActivity.list.add(message.getSender() + ":" + message.getText());
+							ChattingActivity.chatAdapter.notifyDataSetChanged();
+						}
+					});
+					//chatIntent.putExtra(txtMessage, "newMessage"); //Detta ska hända innan "getExtra" i chattingActivity när man trycker på "send" knappen
 				}
 				else if(response instanceof Boolean){
 					Boolean exists = (Boolean) response;
@@ -136,17 +182,43 @@ public class Client extends AppCompatActivity {
 						Boolean hasLoggedIn = prefs.edit().putBoolean("hasLoggedIn", true).commit();
 						activityContext.startActivity(new Intent(activityContext, MainActivity.class));
 					}
-				}else if(response.equals("Failed")){
+				}else if(response.equals("Failed")){		//funkar ej måste använda instace
 						Toast.makeText(activityContext, "Login failed. Please try again", Toast.LENGTH_SHORT);
 
 				}else if(response instanceof ArrayList ) {
 					ArrayList<String> chatMembers = (ArrayList<String>) response;
+					if(chatMembers == null){
+						chatMembers.add(" ");		// TODO fixa att när en ny användare skapas så har den inga chattar..alltså är chatmembers null
+					}
 					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activityContext);
 					Boolean hasLoggedIn = prefs.edit().putBoolean("hasLoggedIn", true).commit();
 					MainActivity.setNames(chatMembers);
 					activityContext.startActivity(new Intent(activityContext, MainActivity.class));
 				}
-					
+				else if(response instanceof Conversations){
+					Conversations convo = (Conversations) response;
+					chatIntent.putExtra("conversationList", convo.getConversation());
+					chatIntent.putExtra("username", user.getUsername());
+					chatIntent.putExtra("chatMembers", convo.getChatMembers());
+					chatIntent.putExtra("chatID", convo.getChatID());
+					activityContext.startActivity(chatIntent);
+				}
+				else if(response instanceof String[]){
+					final String[] users = (String[]) response;
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							CreateChatActivity createChatActivity = new CreateChatActivity();
+							createChatActivity.setData(users);
+							Intent intent = new Intent(activityContext, createChatActivity.getClass());
+							activityContext.startActivity(intent);
+
+						}
+					});
+
+
+				}
+
 			}
 		} catch(IOException | ClassNotFoundException e) {e.printStackTrace();}
 	}
@@ -161,8 +233,8 @@ public class Client extends AppCompatActivity {
 		protected String doInBackground(String... params) {
 			publishProgress("Sleeping..."); // Calls onProgressUpdate()
 			try {
-				String serverAddr = "10.2.29.99";
-				socketClient = new Socket(serverAddr, 7777);
+				String serverAddr =  "192.168.1.104";
+				socketClient = new Socket(serverAddr, 6666);
 
 				output = new ObjectOutputStream(socketClient.getOutputStream());
 				input = new ObjectInputStream(socketClient.getInputStream());
@@ -286,5 +358,152 @@ public class Client extends AppCompatActivity {
 
 		}
 	}
+	private class SendConversationTask extends AsyncTask<String, Void, String> {
+
+		private String resp;
+		private Conversations convo;
+		ProgressDialog progressDialog;
+
+		public SendConversationTask(Conversations convo){
+			this.convo = convo;
+		}
+
+		@Override
+		protected String doInBackground(String... params) {// Calls onProgressUpdate()
+			try {
+
+				output.writeObject(convo);
+				output.flush();
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
+			return resp;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			// execution of result of Long time consuming operation
+			progressDialog.dismiss();
+		}
+
+
+		@Override
+		protected void onPreExecute() {
+			progressDialog = ProgressDialog.show(activityContext,
+					"ProgressDialog",
+					"Wait for it");
+		}
+	}
+	private class SendMessageTask extends AsyncTask<String, String, String> {
+
+		private String resp;
+		private Message message;
+		ProgressDialog progressDialog;
+
+		public SendMessageTask(Message message){
+			this.message = message;
+		}
+
+		@Override
+		protected String doInBackground(String... params) {// Calls onProgressUpdate()
+			try {
+
+				output.writeObject(message);
+				output.flush();
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
+			return resp;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			// execution of result of Long time consuming operation
+			progressDialog.dismiss();
+		}
+
+
+		@Override
+		protected void onPreExecute() {
+			progressDialog = ProgressDialog.show(activityContext,
+					"ProgressDialog",
+					"Wait for it");
+		}
+	}
+	private class GetAllUsersTask extends AsyncTask<String, Void, String> {
+
+		private String resp;
+		private Message message;
+		ProgressDialog progressDialog;
+
+
+		@Override
+		protected String doInBackground(String... params) {// Calls onProgressUpdate()
+			try {
+
+				output.writeObject("getUsers");
+				output.flush();
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
+			return resp;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			// execution of result of Long time consuming operation
+			progressDialog.dismiss();
+		}
+
+
+		@Override
+		protected void onPreExecute() {
+			progressDialog = ProgressDialog.show(activityContext,
+					"ProgressDialog",
+					"Wait for it");
+		}
+	}
+	private class CreateChatTask extends AsyncTask<String, Void, String> {
+
+		private String resp;
+		private Message message;
+		private NewChatInfo chatInfo;
+		ProgressDialog progressDialog;
+
+		public CreateChatTask(NewChatInfo chatInfo){
+			this.chatInfo = chatInfo;
+		}
+
+		@Override
+		protected String doInBackground(String... params) {// Calls onProgressUpdate()
+			try {
+
+				output.writeObject(chatInfo);
+				output.flush();
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
+			return resp;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			// execution of result of Long time consuming operation
+			progressDialog.dismiss();
+		}
+
+
+		@Override
+		protected void onPreExecute() {
+			progressDialog = ProgressDialog.show(activityContext,
+					"ProgressDialog",
+					"Wait for it");
+		}
+	}
+
 
 }

@@ -1,6 +1,7 @@
 package com.example.secretstoriesuiv01;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -8,13 +9,12 @@ public class Message implements Serializable {
 	private int messageID;
 	private String text;
 	private String sender;
-	private Object[] recipients;
+	private ArrayList<String> recipients;
 	private Date dateSent;
 
 	//If the user sends a message-object without a picture
 	
-	public Message(int id, String text, String sender, Object[] recipients) {
-		this.messageID = id;
+	public Message(String text, String sender, ArrayList<String> recipients) {
 		this.text = text;
 		this.sender = sender;
 		this.recipients = recipients;
@@ -40,11 +40,11 @@ public class Message implements Serializable {
 		this.sender = sender;
 	}
 
-	public Object[] getRecipients() {
+	public ArrayList<String> getRecipients() {
 		return recipients;
 	}
 
-	public void setRecipients(Object[] recipients) {
+	public void setRecipients(ArrayList<String> recipients) {
 		this.recipients = recipients;
 	}
 

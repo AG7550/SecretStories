@@ -15,16 +15,22 @@
         android:supportsRtl="true"
         android:theme="@style/NoActionBarTheme">
         <activity
+            android:name=".CreateChatActivity"
+            android:windowSoftInputMode="stateHidden">
+
+        </activity>
+        <activity
             android:name=".ChattingActivity"
             android:label="@string/title_activity_main2"
-            android:theme="@style/NoActionBarTheme.NoActionBar"></activity>
-        <activity android:name=".CreateAccountActivity" />
+            android:theme="@style/NoActionBarTheme.NoActionBar" /><activity
+            android:name=".CreateAccountActivity" />
         <activity
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
