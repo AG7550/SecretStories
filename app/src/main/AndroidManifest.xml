@@ -17,7 +17,7 @@
         <activity
             android:name=".ChattingActivity"
             android:label="@string/title_activity_main2"
-            android:theme="@style/NoActionBarTheme.NoActionBar" />
+            android:theme="@style/NoActionBarTheme.NoActionBar"></activity>
         <activity android:name=".CreateAccountActivity" />
         <activity
             android:name=".ChatActivity"

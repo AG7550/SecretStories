@@ -83,15 +83,7 @@ public class MainActivity extends AppCompatActivity {
     public static void setNames(ArrayList<String> list){
         names = new String[list.size()];
         for(int i = 0; i<names.length; i++){
-            String tempName = "";
-            String[] temp = list.get(i).split(":");
-            for(String name : temp){
-                String attach = name;
-                if(!attach.isEmpty()) {
-                    tempName += attach + ", ";
-                }
-            }
-            names[i] = tempName.substring(0, tempName.length() - 2);
+            names[i] = list.get(i);
         }
     }
 

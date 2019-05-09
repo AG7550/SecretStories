@@ -3,10 +3,8 @@ package com.example.secretstoriesuiv01;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +15,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -38,13 +35,9 @@ public class ChatFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private static String[] namesList;
-    private static ArrayList<String> chat;
+
     private OnFragmentInteractionListener mListener;
 
-    public static void setChat(ArrayList<String> chat1){
-        chat = chat1;
-
-    }
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -83,21 +76,9 @@ public class ChatFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_chat2, container, false);
         String[] names = namesList;
         ArrayAdapter<String> nameAdapter = new CustomAdapter(getActivity(), names, new BtnClickListener() {
-            public void onBtnClick(int position, String members) {
-                ArrayList<String> chatMembers = new ArrayList<String>();
-                String[] temp = members.split(", ");
-                for (String name : temp){
-                    chatMembers.add(name);
-                }
-                Conversations convo = new Conversations(position, chatMembers, null);
-                if(LoginActivity.client != null){
-                    LoginActivity.client.connect(getActivity());
-                    LoginActivity.client.getChat(convo);
-                }
-                else{
-                    CreateAccountActivity.client.connect(getActivity());
-                    CreateAccountActivity.client.getChat(convo);
-                }
+            @Override
+            public void onBtnClick(int position) {
+                startActivity(new Intent(getContext(), ChattingActivity.class));
             }
         });
         ListView lvwUsers = v.findViewById(R.id.lvwUsers);
@@ -122,9 +103,6 @@ public class ChatFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-    public static void updateAdapter(ArrayAdapter<String> adapter){
-        adapter.notifyDataSetChanged();
     }
 
     /**

@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import org.w3c.dom.Text;
 
@@ -35,22 +34,20 @@ public class ChatAdapter extends ArrayAdapter<String> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater nameInflator = LayoutInflater.from(this.context);
         View customView = nameInflator.inflate(R.layout.my_message, parent, false);
-        String[] temp = chat.get(position).split(":", 2);
+
+
+        String[] temp = chat.get(position).split(":");
+
         if (temp[0].equals(username)) {
-            if(temp.length > 1){
-                customView = nameInflator.inflate(R.layout.my_message, parent, false);
-                TextView tvwBubble = customView.findViewById(R.id.message_body_right);
-                tvwBubble.setBackground(getContext().getDrawable(R.drawable.my_message));
-                tvwBubble.setText(temp[1]);}
+            TextView tvwBubble = customView.findViewById(R.id.message_body_right);
+            tvwBubble.setBackground(getContext().getDrawable(R.drawable.my_message));
+            tvwBubble.setText(temp[1]);
 
 
         } else {
-            if(temp.length > 1){
-                customView = nameInflator.inflate(R.layout.their_message, parent, false);
-                TextView tvwBubble = customView.findViewById(R.id.message_body_left);
-                tvwBubble.setBackground(getContext().getDrawable(R.drawable.their_message));
-                tvwBubble.setText(temp[1]);
-            }
+            TextView tvwBubble = customView.findViewById(R.id.message_body_right);
+            tvwBubble.setBackground(getContext().getDrawable(R.drawable.their_message));
+            tvwBubble.setText(temp[1]);
 
         }
 
