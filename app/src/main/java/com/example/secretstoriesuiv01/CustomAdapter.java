@@ -26,14 +26,14 @@ public class CustomAdapter extends ArrayAdapter<String> {
         LayoutInflater nameInflator = LayoutInflater.from(getContext());
         View customView =nameInflator.inflate(R.layout.custom_row, parent, false);
         String name = getItem(position);
-        Button btnName = (Button) customView.findViewById(R.id.btnContact);
+        final Button btnName = (Button) customView.findViewById(R.id.btnContact);
         btnName.setTag(position);
         btnName.setText(name);
         btnName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mClickListener != null){
-                    mClickListener.onBtnClick((Integer) v.getTag());
+                    mClickListener.onBtnClick((Integer) v.getTag(), (String) btnName.getText());
                 }
             }
         });

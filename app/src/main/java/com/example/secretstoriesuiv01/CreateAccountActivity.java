@@ -10,7 +10,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     private EditText username;
     private EditText password;
-    private Client client;
+    public static Client client;
     private ConnectDB database;
 
     @Override
@@ -22,7 +22,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         password = findViewById(R.id.input_password);
 
 
-        client = new Client(7777, "192.168.1.104");
+        client = new Client(6666, "10.2.19.40"); // "192.168.1.104"
     }
 
     public void toLogin(View view){

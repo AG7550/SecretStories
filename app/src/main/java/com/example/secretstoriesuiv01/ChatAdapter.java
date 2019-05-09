@@ -10,22 +10,24 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 
 public class ChatAdapter extends ArrayAdapter<String> {
     String[][] messages;
     String username;
     Context context;
-    String[] tempMessage;
+    private ArrayList<String> chat;
 
-    ChatAdapter(Context context, String username, String[] chat) {      // chat är chatthistoriken
+    ChatAdapter(Context context, String username, ArrayList chat) {      // chat är chatthistoriken
         super(context, R.layout.custom_row, chat);
         this.username = username;
-        this.messages = new String[chat[0].length()][chat[0].length()];
+        this.messages = new String[chat.size()][chat.size()];
         this.context = context;
-        tempMessage = chat[0].split(":");
-        formatChat(chat);
+        this.chat = chat;
     }
 
     @NonNull
@@ -33,30 +35,26 @@ public class ChatAdapter extends ArrayAdapter<String> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater nameInflator = LayoutInflater.from(this.context);
         View customView = nameInflator.inflate(R.layout.my_message, parent, false);
-        String name = getItem(position);
-
-
-            TextView tvwBubble = customView.findViewById(R.id.message_body);
-            if(messages[position][0].equals(username)){
+        String[] temp = chat.get(position).split(":", 2);
+        if (temp[0].equals(username)) {
+            if(temp.length > 1){
+                customView = nameInflator.inflate(R.layout.my_message, parent, false);
+                TextView tvwBubble = customView.findViewById(R.id.message_body_right);
                 tvwBubble.setBackground(getContext().getDrawable(R.drawable.my_message));
-                tvwBubble.setText(messages[position][1]);
+                tvwBubble.setText(temp[1]);}
 
-            }
-            else
-            {
+
+        } else {
+            if(temp.length > 1){
+                customView = nameInflator.inflate(R.layout.their_message, parent, false);
+                TextView tvwBubble = customView.findViewById(R.id.message_body_left);
                 tvwBubble.setBackground(getContext().getDrawable(R.drawable.their_message));
-                tvwBubble.setText(messages[position][1]);
+                tvwBubble.setText(temp[1]);
             }
+
+        }
 
 
         return customView;
-    }
-
-    // Fick ändra denna. Borde stämma nu.
-    public void formatChat(String[] chat){
-        for(int i = 0; i < tempMessage.length - 1; i++){
-            messages[i][0] = tempMessage[i];
-            messages[i][1] = tempMessage[i+1];
-        }
     }
 }
