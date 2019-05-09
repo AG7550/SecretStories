@@ -22,7 +22,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         password = findViewById(R.id.input_password);
 
 
-        client = new Client(8000, "10.2.29.99");
+        client = new Client(7777, "192.168.1.104");
     }
 
     public void toLogin(View view){

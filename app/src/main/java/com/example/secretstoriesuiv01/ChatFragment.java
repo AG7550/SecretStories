@@ -81,20 +81,8 @@ public class ChatFragment extends Fragment {
                 startActivity(new Intent(getContext(), ChattingActivity.class));
             }
         });
-        ListView lvwUsers = (ListView) v.findViewById(R.id.lvwUsers);
+        ListView lvwUsers = v.findViewById(R.id.lvwUsers);
         lvwUsers.setAdapter(nameAdapter);
-
-    //    lvwUsers.setOnItemClickListener(
-   //             new AdapterView.OnItemClickListener(){
-  //                  @Override
-  //                  public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-   //                     Toast.makeText(getActivity(), "Detta funkar!", Toast.LENGTH_LONG).show();
-  //                      startActivity(new Intent(getContext(), ChattingActivity.class));
-  //                  }
-   //             }
-  //      );
-
-
 
         return v;
     }

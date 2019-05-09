@@ -161,8 +161,8 @@ public class Client extends AppCompatActivity {
 		protected String doInBackground(String... params) {
 			publishProgress("Sleeping..."); // Calls onProgressUpdate()
 			try {
-				String serverAddr = "10.2.29.99";
-				socketClient = new Socket(serverAddr, 8000);
+				String serverAddr = "192.168.1.104";
+				socketClient = new Socket(serverAddr, 7777);
 
 				output = new ObjectOutputStream(socketClient.getOutputStream());
 				input = new ObjectInputStream(socketClient.getInputStream());
