@@ -109,5 +109,8 @@ public class MainActivity extends AppCompatActivity {
             names[i] = tempName.substring(0, tempName.length() - 2);
         }
     }
+    public static void setNames(String[] list){
+        names = list;
+    }
 
 }

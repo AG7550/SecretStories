@@ -90,11 +90,14 @@ public class ChatFragment extends Fragment {
                 for (String name : temp){
                     chatMembers.add(name);
                 }
-                Conversations convo = new Conversations(position, chatMembers, null);
                 if(LoginActivity.client != null){
+                    chatMembers.add(LoginActivity.client.getUsername());
+                    Conversations convo = new Conversations(position, chatMembers, null);
                     LoginActivity.client.getChat(convo);
                 }
                 else{
+                    chatMembers.add(CreateAccountActivity.client.getUsername());
+                    Conversations convo = new Conversations(position, chatMembers, null);
                     CreateAccountActivity.client.getChat(convo);
                 }
             }

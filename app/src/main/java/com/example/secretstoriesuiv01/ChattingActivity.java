@@ -51,6 +51,7 @@ public class ChattingActivity extends AppCompatActivity{
                 username = bundle.getString("username");
                 list = bundle.getStringArrayList("conversationList");
                 chatMembers = bundle.getStringArrayList("chatMembers");
+                chatMembers.remove("username");
                 chatID = bundle.getInt("chatID");
             }
         }

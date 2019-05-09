@@ -10,7 +10,7 @@
         android:layout_margin="8dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
-        android:id="@+id/textView"
+        android:id="@+id/checkBox"
 
         />
 

@@ -126,6 +126,10 @@ public class Client extends AppCompatActivity {
 		}catch(Exception e){e.printStackTrace();}
 	}
 
+	public String getUsername(){
+		return user.getUsername();
+	}
+
 	/**
 	 *
 	 * public void createButton(ArrayList<String> chatMembers){
@@ -233,7 +237,7 @@ public class Client extends AppCompatActivity {
 		protected String doInBackground(String... params) {
 			publishProgress("Sleeping..."); // Calls onProgressUpdate()
 			try {
-				String serverAddr =  "192.168.1.104";
+				String serverAddr =  "192.168.1.25";
 				socketClient = new Socket(serverAddr, 6666);
 
 				output = new ObjectOutputStream(socketClient.getOutputStream());
