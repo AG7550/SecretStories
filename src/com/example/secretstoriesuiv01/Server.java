@@ -54,10 +54,6 @@ public class Server {
 		return database.verifyUser(username);
 	}
 	
-	public void login(/*User, ClientHandler*/) {
-		// hämta all data för den användaren och skicka till klienten. 
-	}
-	
 	
 	public void sendMessage(Message message) {
 		String user = message.getSender();
@@ -71,30 +67,6 @@ public class Server {
 		 */
 	}
 	
-	public void saveContacts(/*Message av typen Contacts*/) {
-		/*
-		 * Sparar de valda kontakterna i databasen för just den klienten.
-		 */
-	}
-	
-	public void createAccount(/*User*/) {
-		/*
-		 * Skapar ett konto för den klienten. Sparar i databasen. 
-		 */
-	}
-	
-	public void searchUser(/*User eller username*/) {
-		/*
-		 * En användare ska kunna leta efter en användare som existerar men kanske inte är inloggad. 
-		 */
-	}
-	
-	public void logout(/*User*/) {
-		/*
-		 * Denna metod ska anropas när en användare loggar ut.
-		 * Sen ska också metoden updadeOnline anropas för att då ta bort användaren som precis loggade ut. 
-		 */
-	}
 	public void disconnect(Socket socket) {
 		try {
 			socket.close();
@@ -134,7 +106,7 @@ private class ClientHandler extends Thread{
 						String[] stringUser = (String[]) object;
 						boolean exist = database.verifyLogin(stringUser[0], stringUser[1]);
 						if(exist == true) {
-							user = new User(stringUser[0], stringUser[1]);
+							user = new User(stringUser[0], stringUser[1],"");
 							ArrayList<String> chatMembers = database.getConversationNames(stringUser[0]);
 							output.writeObject(chatMembers);
 							output.flush();
@@ -162,7 +134,7 @@ private class ClientHandler extends Thread{
 						}
 						else {
 							System.out.println("User doesnt exist");
-							database.createUser(user.getUsername(), user.getPassword());
+							database.createUser(user.getUsername(), user.getPassword(), user.getChat_password());
 							output.writeObject(false);
 							output.flush();
 							handlers.add(this);
@@ -218,6 +190,13 @@ private class ClientHandler extends Thread{
 						database.createNewChat(database.getNumberOfConversations() + 1, chatInfo.getMembers());
 						//skriva tillbaka något som uppdaterar chattar. arrayList
 						output.writeObject(database.getConversationNames(this.user.getUsername()));
+					}
+					else if(object instanceof Lock) {
+						Lock lock = (Lock) object;
+						Boolean resp = database.verifyChattPassword(this.user.getUsername(),lock.getpassword());
+						lock.setValid(resp);
+						output.writeObject(lock);
+						output.flush();
 					}
 				}catch(IOException e) {
 					disconnect(socket);

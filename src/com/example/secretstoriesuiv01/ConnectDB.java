@@ -300,8 +300,8 @@ public class ConnectDB {
 		}
 }
 	//L�gger till anv�ndaren i databas
-	public static void createUser(String username, String password) {
-		String query = "INSERT INTO `users`(`userid`, `username`, `password`, `contacts`) VALUES (NULL,'"+username+"','"+password+"', '"+""+"')";
+	public static void createUser(String username, String password, String chatPassword) {
+		String query = "INSERT INTO `users`(`userid`, `username`, `password`, `contacts`) VALUES (NULL,'"+username+"','"+password+"', '"+chatPassword+"')";
 		executeSQLQuery(query);
 	}
 	//Tar bort anv�ndaren fr�n databas
@@ -355,6 +355,35 @@ public class ConnectDB {
 		
 		return amount;
 	}
+	
+	public boolean verifyChattPassword(String username, String chatPassword) {
+			String pass = "-1";
+			String query = "SELECT * FROM users";
+			
+			ResultSet rs;
+			try {
+				st = connection.createStatement();
+				rs = st.executeQuery(query);
+				while (rs.next()) {
+						if(pass.equals(chatPassword)) {
+							break;
+						}
+						else {
+							pass = rs.getString("contacts");
+						}
+				}
+			} 
+			catch (Exception e) {
+
+				 e.printStackTrace();
+			}
+			if (pass.equals(chatPassword)) {
+				return true;
+			}
+			else {return false;
+			}		
+	}
+
 	
 	public static void main(String[] args) {
 		ConnectDB db = new ConnectDB();
