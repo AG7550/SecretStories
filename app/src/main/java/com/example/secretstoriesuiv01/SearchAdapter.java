@@ -26,7 +26,7 @@ public class SearchAdapter extends ArrayAdapter<String> {
     ArrayList<String> checkedUsers = new ArrayList<String>();
 
 
-    SearchAdapter(Context context, String username, ArrayList users) {      // chat är chatthistoriken
+    SearchAdapter(Context context, String username, ArrayList users) {
         super(context, R.layout.activity_create_chat, users);
         this.username = username;
         this.context = context;

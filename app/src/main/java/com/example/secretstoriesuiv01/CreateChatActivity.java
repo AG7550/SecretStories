@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -77,18 +78,27 @@ public class CreateChatActivity extends AppCompatActivity {
                   int id = ChatFragment.nameAdapter.getCount() + 1;
 
                   if(LoginActivity.client != null){
-                      checkedUsers.add(LoginActivity.client.getUsername());
+                      checkedUsers.add(LoginActivity.client.getUsername());         // här blir rätt
                       NewChatInfo chatInfo = new NewChatInfo(id,checkedUsers);
-                    LoginActivity.client.createChat(chatInfo);
-                }
+                      LoginActivity.client.createChat(chatInfo);
+                      Log.d("H", chatInfo.getMembers().toString());
+
+
+                  }
                 else{
                       checkedUsers.add(CreateAccountActivity.client.getUsername());
                       NewChatInfo chatInfo = new NewChatInfo(id,checkedUsers);
-                    CreateAccountActivity.client.createChat(chatInfo);
-                }
+                      CreateAccountActivity.client.createChat(chatInfo);
+                      Log.d("H", chatInfo.getMembers().toString());
+
+
+
+                  }
                 // skriva till servern och lägga till chat
             }
+
         });
+
     }
     public static void setUser(String username){
         checkedUsers.add(username);

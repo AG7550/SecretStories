@@ -120,7 +120,7 @@ public class Client extends AppCompatActivity {
 			new GetAllUsersTask().execute();
 		}catch(Exception e){e.printStackTrace();}
 	}
-	public void logOut(Context context){
+	public void logOut(){
 		try{
 			new LogOutUserTask().execute();
 		}catch(Exception e){e.printStackTrace();}
@@ -215,13 +215,13 @@ public class Client extends AppCompatActivity {
 				}
 				else if(response instanceof ArrayList ) {
 					ArrayList<String> chatMembers = (ArrayList<String>) response;
+
 					if(chatMembers == null || chatMembers.size() == 0){
 						String[] users = new String[1];
 						MainActivity.setNames(users);
 					}
 					else{
 						MainActivity.setNames(chatMembers);
-
 					}
 					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activityContext);
 					Boolean hasLoggedIn = prefs.edit().putBoolean("hasLoggedIn", true).commit();
@@ -244,12 +244,7 @@ public class Client extends AppCompatActivity {
 							createChatActivity.setData(users);
 							Intent intent = new Intent(activityContext, createChatActivity.getClass());
 							// för att uppdatera chattarna
-							runOnUiThread(new Runnable() {
-								@Override
-								public void run() {
-									ChatFragment.nameAdapter.notifyDataSetChanged();
-								}
-							});
+
 							activityContext.startActivity(intent);
 
 						}
@@ -297,7 +292,7 @@ public class Client extends AppCompatActivity {
 		protected String doInBackground(String... params) {
 			publishProgress("Sleeping..."); // Calls onProgressUpdate()
 			try {
-				String serverAddr =  "10.2.19.40";
+				String serverAddr =  "192.168.1.104";
 				socketClient = new Socket(serverAddr, 6666);
 
 				output = new ObjectOutputStream(socketClient.getOutputStream());
@@ -544,7 +539,7 @@ public class Client extends AppCompatActivity {
 		@Override
 		protected String doInBackground(String... params) {// Calls onProgressUpdate()
 			try {
-
+				output.reset();
 				output.writeObject(chatInfo);
 				output.flush();
 			}

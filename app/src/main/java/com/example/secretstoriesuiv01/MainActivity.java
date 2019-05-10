@@ -1,6 +1,7 @@
 package com.example.secretstoriesuiv01;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
             createChatbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    CreateChatActivity.checkedUsers.clear();
                     // skicka till client som skickar till server. När client tar emot så ska den starta aktiviten nedan men först ge datan i kunstruktorn
                     if(LoginActivity.client != null){
                         LoginActivity.client.getAllUsers(v.getContext());
@@ -90,14 +92,13 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if(LoginActivity.client != null){
-                       LoginActivity.client.logOut(v.getContext());
+                       LoginActivity.client.logOut();
                     }
                     else{
-                        CreateAccountActivity.client.logOut(v.getContext());
+                        CreateAccountActivity.client.logOut();
                     }
                 }
             });
-
 
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -108,6 +109,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+    @Override
+    public void onBackPressed(){
+        if(LoginActivity.client != null){
+            LoginActivity.client.logOut();
+        }
+        else{
+            CreateAccountActivity.client.logOut();
+        }
     }
 
 

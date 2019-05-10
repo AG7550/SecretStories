@@ -24,7 +24,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         chatPassword = findViewById(R.id.chat_password);
 
 
-        client = new Client(6666,  "10.2.19.40"); // "192.168.1.104"
+        client = new Client(6666,  "192.168.1.104"); // "192.168.1.104"
     }
 
     public void toLogin(View view){

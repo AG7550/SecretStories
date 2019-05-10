@@ -40,7 +40,7 @@ import static android.Manifest.permission.READ_CONTACTS;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
-    public static Client client = new Client(6666,  "10.2.19.40");
+    public static Client client = new Client(6666,  "192.168.1.104");
     /**
      * Id to identity READ_CONTACTS permission request.
      */
