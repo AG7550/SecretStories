@@ -5,12 +5,22 @@
 
     <Button
         android:id="@+id/btnContact"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_marginTop="100dp"
+        android:layout_width="326dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="30dp"
         android:drawableLeft="@drawable/baseline_perm_identity_black_18dp"
-        android:drawableRight="@drawable/baseline_lock_open_black_18dp"
         android:padding="16dp"
         android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnLock"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginTop="30dp"
+
+        android:drawableBottom="@drawable/baseline_lock_black_18dp"
+        android:padding="16dp"
+        android:textSize="18sp" />
+
 
 </LinearLayout>

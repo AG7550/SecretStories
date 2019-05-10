@@ -28,7 +28,7 @@
 
         <TextView
             android:id="@+id/toolbartitle"
-            android:layout_width="225dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:text="Chattar"
             android:textSize="30sp"
@@ -46,13 +46,6 @@
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="5dp" />
 
-        <Button
-            android:id="@+id/keyBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/baseline_vpn_key_black_18dp"
-            tools:layout_editor_absoluteX="10dp"
-            tools:layout_editor_absoluteY="10dp" />
 
 
     </android.support.v7.widget.Toolbar>
