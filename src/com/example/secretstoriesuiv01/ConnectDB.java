@@ -167,7 +167,7 @@ public class ConnectDB {
 		return id;
 	}
 	public int getChatIDFromConversation(String username, ArrayList<String> recipients) {
-//		recipients.add(username);
+		recipients.add(username);
 		Collections.sort(recipients);
 		String query = "SELECT * FROM conversations";
 		
