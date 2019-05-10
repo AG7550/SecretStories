@@ -12,13 +12,13 @@
         android:hint="Enter password"
         android:id="@+id/lockPassword"
         />
-
+    
     <Button
-        android:id="@+id/lockBtn"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:text="Lock chats"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
-        android:text="Unlock chat" />
+        android:id="@+id/lockBtn"/>
 
 </LinearLayout>

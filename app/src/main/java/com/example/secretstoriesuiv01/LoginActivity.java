@@ -166,7 +166,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String username = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        User user = new User(username, password, "");
+        User user = new User(username, password);
         client.connect(this);
         client.login(user);
         client.setUser(user);

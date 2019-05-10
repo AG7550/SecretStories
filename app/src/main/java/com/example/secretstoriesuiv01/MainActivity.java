@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 
@@ -85,18 +84,52 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            Button keyButton = (Button) findViewById(R.id.keyBtn);
+            keyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    hasLocked = prefs.getBoolean("hasLocked", false);
+                    dialog = new Dialog(MainActivity.this);
+                    dialog.setContentView(R.layout.dialog_template);
+                    EditText lockPassword = (EditText) dialog.findViewById(R.id.lockPassword);
+                    if(!hasLocked){
+                        lockPassword.setText("Enter password to unlock chats");
+                    }
+                    else{
+                        lockPassword.setText("Enter password to lock chats");
+                    }
+                    dialog.show();
+                    Button lockBtn = (Button) dialog.findViewById(R.id.lockBtn);
+                    lockBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // kolla lösenord
+                            if(!hasLocked){
+                                ChatFragment.lvwUsers.setClickable(false);
+                                hasLocked = prefs.edit().putBoolean("hasLocked", true).commit();
 
+                            }
+                            else{
+                                ChatFragment.lvwUsers.setClickable(true);
+                                hasLocked = prefs.edit().putBoolean("hasLocked", false).commit();
+
+                            }
+
+                            // Gå igenom och diseble alla chattar. sen när man går igenom dem så kolla om om de är enable..
+                            dialog.cancel();
+                        }
+                    });
+                }
+            });
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_layout, ChatFragment.newInstance("CHANGE THIS",  names));
             transaction.commit();
             hasLoggedIn = prefs.edit().putBoolean("hasLoggedIn", false).commit();
-
         }
 
 
     }
-
 
     public void toLogin(View view){
         startActivity(new Intent(this, LoginActivity.class));

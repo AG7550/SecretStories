@@ -143,9 +143,4 @@ public class ChatFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-    public static void setListEnable(Boolean bol){
-        lvwUsers.setClickable(false);
-        lvwUsers.setEnabled(false);
-    }
 }

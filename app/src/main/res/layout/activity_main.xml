@@ -25,22 +25,16 @@
         android:background="@color/colorPrimary"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="95dp">
-        <Button
-            android:id="@+id/logoutButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/logouticon"
-            android:gravity="start"
-            android:layout_marginRight="-50dp"/>
 
         <TextView
             android:id="@+id/toolbartitle"
-            android:layout_marginLeft="150dp"
-            android:layout_width="200dp"
+            android:layout_width="225dp"
             android:layout_height="wrap_content"
             android:text="Chattar"
             android:textSize="30sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="10dp" />
 
         <Button
             android:id="@+id/writemessagebutton"
@@ -52,23 +46,27 @@
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="5dp" />
 
+        <Button
+            android:id="@+id/keyBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/baseline_vpn_key_black_18dp"
+            tools:layout_editor_absoluteX="10dp"
+            tools:layout_editor_absoluteY="10dp" />
 
 
     </android.support.v7.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/frame_layout"
-        android:layout_width="400dp"
-        android:layout_height="600dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="670dp"
+        android:layout_above="@+id/bottomnavigation"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginBottom="7dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomnavigation"
+        android:layout_marginBottom="8dp"
+        android:animateLayoutChanges="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarmain">
-
-    </FrameLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

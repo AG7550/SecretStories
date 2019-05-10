@@ -7,7 +7,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -127,12 +126,6 @@ public class Client extends AppCompatActivity {
 		}catch(Exception e){e.printStackTrace();}
 	}
 
-	public void verifyChatPassword(Lock lock){
-		try{
-			new VerifyChatPassword(lock).execute();
-		}catch (Exception e){};
-	}
-
 	public String getUsername(){
 		return user.getUsername();
 	}
@@ -245,32 +238,8 @@ public class Client extends AppCompatActivity {
 
 						}
 					});
-				}
-				else if( response instanceof Lock){
-					Lock lock = (Lock) response;
-					Boolean valid = lock.getValid();
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							if(CustomAdapter.ativeChat.isEnabled()){
-								CustomAdapter.ativeChat.setEnabled(false);
-//								CustomAdapter.activeLockBtn.setBackground(getResources().getDrawable(R.drawable.baseline_lock_black_18dp));
-							}
-							else {
-								CustomAdapter.ativeChat.setEnabled(true);
-//								CustomAdapter.activeLockBtn.setBackground(getResources().getDrawable(R.drawable.baseline_lock_open_black_18dp));
-							}
 
 
-						}
-					});
-
-//					if(valid){
-//						CustomAdapter.ativeChat.setEnabled(true);
-//					}
-//					else {
-//						//felmeddelande
-//					}
 				}
 
 			}
@@ -536,45 +505,6 @@ public class Client extends AppCompatActivity {
 			try {
 
 				output.writeObject(chatInfo);
-				output.flush();
-			}
-			catch(IOException e) {
-				e.printStackTrace();
-			}
-			return resp;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			// execution of result of Long time consuming operation
-			progressDialog.dismiss();
-		}
-
-
-		@Override
-		protected void onPreExecute() {
-			progressDialog = ProgressDialog.show(activityContext,
-					"ProgressDialog",
-					"Wait for it");
-		}
-	}
-
-	private class VerifyChatPassword extends AsyncTask<String, Void, String> {
-
-		private String resp;
-		private Message message;
-		private Lock lock;
-		ProgressDialog progressDialog;
-
-		public VerifyChatPassword(Lock lock) {
-			this.lock = lock;
-		}
-
-		@Override
-		protected String doInBackground(String... params) {// Calls onProgressUpdate()
-			try {
-
-				output.writeObject(lock);
 				output.flush();
 			}
 			catch(IOException e) {
