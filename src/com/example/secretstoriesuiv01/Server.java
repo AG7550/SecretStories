@@ -110,7 +110,15 @@ private class ClientHandler extends Thread{
 							ArrayList<String> chatMembers = database.getConversationNames(stringUser[0]);
 							output.writeObject(chatMembers);
 							output.flush();
+							for(ClientHandler handler : handlers) 
+							{
+							if(handler.user.getUsername().equals(user.getUsername())) {
+								
+							}
+							else {
 							handlers.add(this);
+							}
+							}
 //							Logga in
 //							login();
 //							loadConvos(); 
@@ -137,10 +145,16 @@ private class ClientHandler extends Thread{
 							database.createUser(user.getUsername(), user.getPassword(), user.getChat_password());
 							output.writeObject(false);
 							output.flush();
-							handlers.add(this);
+							for(ClientHandler handler : handlers) {
+							if(handler.user.getUsername().equals(user.getUsername())) {
+								
+							}
+							else {
+								handlers.add(this);
+							}
 						}
 						
-					}
+					}}
 					
 					else if(object instanceof Message) {
 						Message message = (Message) object;
@@ -182,6 +196,15 @@ private class ClientHandler extends Thread{
 							output.writeObject(usersArray);
 							output.flush();
 							System.out.println("skickar users" + users.toString());
+						}
+						else if(req.equals("Logout")){
+							for(ClientHandler handler : handlers) {
+								System.out.println(handler.user.getUsername() + " 1");
+							}
+							handlers.remove(this);
+							output.writeObject("Logout");
+							output.flush();
+							disconnect(socket);
 						}
 						
 					}
