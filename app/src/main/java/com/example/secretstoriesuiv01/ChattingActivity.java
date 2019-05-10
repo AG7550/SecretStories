@@ -58,7 +58,9 @@ public class ChattingActivity extends AppCompatActivity{
         chatAdapter = new ChatAdapter(this, username, list);
         ListView lvwUsers = findViewById(R.id.messages_view);
         TextView tbarName = findViewById(R.id.tbarName);
-        tbarName.setText(chatMembers.toString().substring(1, chatMembers.toString().length()-1));
+        ArrayList<String> tempNames = chatMembers;
+        tempNames.remove(username);
+        tbarName.setText(tempNames.toString().substring(1, tempNames.toString().length()-1));
         final EditText tbxMessage = findViewById(R.id.tbxMessage);
         ImageView btnSend = findViewById(R.id.btnSend);
         btnSend.setOnClickListener(new View.OnClickListener() {

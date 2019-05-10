@@ -44,10 +44,10 @@ public class CustomAdapter extends ArrayAdapter<String> {
                 @Override
                 public void onClick(View v) {
                     final Dialog dialog = new Dialog(getContext());
+                    dialog.setContentView(R.layout.dialog_template);
                     Button lockBtn = dialog.findViewById(R.id.lockBtn);
                     activeLockBtn = lockBtn;
                     ativeChat = btnName;        // den som clienten ska ändra
-                    dialog.setContentView(R.layout.dialog_template);
                     final EditText lockPassword = dialog.findViewById(R.id.lockPassword);
                     dialog.show();
                     lockBtn.setOnClickListener(new View.OnClickListener() {

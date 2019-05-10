@@ -254,11 +254,11 @@ public class Client extends AppCompatActivity {
 						public void run() {
 							if(CustomAdapter.ativeChat.isEnabled()){
 								CustomAdapter.ativeChat.setEnabled(false);
-								CustomAdapter.activeLockBtn.setBackground(getResources().getDrawable(R.drawable.baseline_lock_black_18dp));
+//								CustomAdapter.activeLockBtn.setBackground(getResources().getDrawable(R.drawable.baseline_lock_black_18dp));
 							}
 							else {
 								CustomAdapter.ativeChat.setEnabled(true);
-								CustomAdapter.activeLockBtn.setBackground(getResources().getDrawable(R.drawable.baseline_lock_open_black_18dp));
+//								CustomAdapter.activeLockBtn.setBackground(getResources().getDrawable(R.drawable.baseline_lock_open_black_18dp));
 							}
 
 
