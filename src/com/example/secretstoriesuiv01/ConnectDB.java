@@ -27,7 +27,7 @@ public class ConnectDB {
 	}
 	public static Connection getConnection() {
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName("com.mysql.jdbc.Driver");
 				connection  = DriverManager.getConnection("jdbc:mysql://ddwap.mah.se/ai1585", "ai1585", "Aliasse251");
 				return connection;
 		} catch (Exception e) {

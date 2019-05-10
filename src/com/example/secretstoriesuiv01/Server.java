@@ -22,7 +22,7 @@ public class Server {
 	private ServerSocket serverSocket;
 	private ArrayList<ClientHandler> handlers = new ArrayList<ClientHandler>();
 	private ConnectDB database = new ConnectDB();             
-	
+
 	public Server(int port) {
 		try {
 			serverSocket = new ServerSocket(port);
@@ -31,7 +31,7 @@ public class Server {
 			e.printStackTrace();		
 		}
 	}
-	
+
 	/**
 	 * Lyssnar på klienter som kopplas upp.
 	 * @author sandrasmrekar
@@ -45,16 +45,16 @@ public class Server {
 				}catch(IOException | ClassNotFoundException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
 		}
 	}
-	
+
 	public boolean verifyUser(String username) {
 		return database.verifyUser(username);
 	}
-	
-	
+
+
 	public void sendMessage(Message message) {
 		String user = message.getSender();
 		String textMessage = user + ":" + message.getText();
@@ -66,20 +66,14 @@ public class Server {
 		 * Om någon inte är online så ska en notifiering skickas till den.  
 		 */
 	}
-	
+
 	public void disconnect(Socket socket) {
 		try {
 			socket.close();
 		}catch(IOException e) {e.printStackTrace();}
 	}
-	
-	
-	
-	
-	
-	
-	
-private class ClientHandler extends Thread{
+
+	private class ClientHandler extends Thread{
 		private ObjectInputStream input;
 		private ObjectOutputStream output;
 		private Socket socket;
@@ -92,16 +86,16 @@ private class ClientHandler extends Thread{
 			}catch(IOException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
-		
+
 		public void run() {
 			Object object;
 			while(!socket.isClosed()) {
 				try {
-					
+
 					object = (Object) input.readObject();
-			
+
 					if(object instanceof String[]) {	//Kollar användarnamn och lösenord för inloggning.
 						String[] stringUser = (String[]) object;
 						boolean exist = database.verifyLogin(stringUser[0], stringUser[1]);
@@ -110,56 +104,46 @@ private class ClientHandler extends Thread{
 							ArrayList<String> chatMembers = database.getConversationNames(stringUser[0]);
 							output.writeObject(chatMembers);
 							output.flush();
-							for(ClientHandler handler : handlers) 
-							{
-							if(handler.user.getUsername().equals(user.getUsername())) {
-								
+							boolean handlerExist = false;
+							for( int i = 0; i < handlers.size(); i++) {
+								if(handlers.get(i).user.getUsername().equals(user.getUsername())) {
+									handlerExist = true;
+								}
 							}
-							else {
-							handlers.add(this);
+							if(!handlerExist) {
+								handlers.add(this);
 							}
-							}
-//							Logga in
-//							login();
-//							loadConvos(); 
-//							loadSavedContacts();
-							
-							
+
+
 						}
 						else {
 							output.writeObject("Failed");
 							output.flush();
 						}
 					}
-					
+
 					else if(object instanceof User) {
 						user = (User) object;
 						Boolean exist = verifyUser(user.getUsername());
 						if(exist == true) {
 							output.writeObject(true);
 							output.flush();
-							
+
 						}
 						else {
 							System.out.println("User doesnt exist");
 							database.createUser(user.getUsername(), user.getPassword(), user.getChat_password());
 							output.writeObject(false);
 							output.flush();
-							for(ClientHandler handler : handlers) {
-							if(handler.user.getUsername().equals(user.getUsername())) {
-								
-							}
-							else {
-								handlers.add(this);
-							}
-						}
-						
-					}}
-					
+							handlers.add(this);
+
+						}}
+
 					else if(object instanceof Message) {
 						Message message = (Message) object;
 						sendMessage(message);
 						ArrayList<String> rec = message.getRecipients();
+						System.out.println(rec.toString());
 						for(String reci : rec) {
 							for(ClientHandler handler:handlers) {
 								String user = handler.user.getUsername();
@@ -167,7 +151,7 @@ private class ClientHandler extends Thread{
 									handler.output.writeObject(message);
 									handler.output.flush();
 								}
-									
+
 							}
 						}
 						output.writeObject(message);
@@ -206,13 +190,22 @@ private class ClientHandler extends Thread{
 							output.flush();
 							disconnect(socket);
 						}
-						
+
 					}
 					else if(object instanceof NewChatInfo) {
-						NewChatInfo chatInfo = (NewChatInfo) object;
+						NewChatInfo chatInfo = (NewChatInfo) object;		
+						System.out.println("Chattar = " + chatInfo.getMembers());
 						database.createNewChat(database.getNumberOfConversations() + 1, chatInfo.getMembers());
 						//skriva tillbaka något som uppdaterar chattar. arrayList
-						output.writeObject(database.getConversationNames(this.user.getUsername()));
+						//						output.writeObject(database.getConversationNames(this.user.getUsername()));		// skriva till den andra user också, alla som finns i gen sista platsen
+						for(int j = 0; j < chatInfo.getMembers().size();j++) {
+							for(int i = 0; i < handlers.size(); i++) {
+								if(handlers.get(i).user.getUsername().equals(chatInfo.getMembers().get(j))){
+									handlers.get(i).output.writeObject(database.getConversationNames(handlers.get(i).user.getUsername()));
+								}
+							}
+						}
+
 					}
 					else if(object instanceof Lock) {
 						Lock lock = (Lock) object;
@@ -229,14 +222,14 @@ private class ClientHandler extends Thread{
 				}
 			}		
 		}
-		
-		
+
+
 	}
 	public static void main(String[] args) throws UnknownHostException {
 		Server server = new Server(6666); 
-//		InetAddress a = InetAddress.getLocalHost();
-//		System.out.println(a.getHostAddress());
+		//		InetAddress a = InetAddress.getLocalHost();
+		//		System.out.println(a.getHostAddress());
 	}
-	 
+
 
 }
