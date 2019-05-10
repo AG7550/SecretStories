@@ -47,41 +47,44 @@ public class CustomAdapter extends ArrayAdapter<String> {
             btnLock.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ativeChat = btnName;
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+                    if (btnName.isEnabled()) {
+                        btnName.setEnabled(false);
+                    } else {
+                        ativeChat = btnName;
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
 
-                    //AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                        //AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
 
-                    // Setting Dialog Title
-                    alertDialog.setTitle("PASSWORD");
+                        // Setting Dialog Title
+                        alertDialog.setTitle("PASSWORD");
 
-                    // Setting Dialog Message
-                    alertDialog.setMessage("Enter Password");
+                        // Setting Dialog Message
+                        alertDialog.setMessage("Enter Password");
 
-                    final EditText input = new EditText(getContext());
-                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.MATCH_PARENT);
-                    input.setLayoutParams(lp);
-                    alertDialog.setView(input);
-                    //alertDialog.setView(input);
-                    // Setting Positive "Yes" Button
-                    alertDialog.setPositiveButton("Unlock chat",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int which) {
-                                    // Write your code here to execute after dialog
-                                    Lock lock = new Lock(input.getText().toString());
-                                    if(LoginActivity.client != null){
-                                        LoginActivity.client.verifyChatPassword(lock);
+                        final EditText input = new EditText(getContext());
+                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.MATCH_PARENT);
+                        input.setLayoutParams(lp);
+                        alertDialog.setView(input);
+                        //alertDialog.setView(input);
+                        // Setting Positive "Yes" Button
+                        alertDialog.setPositiveButton("Unlock chat",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // Write your code here to execute after dialog
+                                        Lock lock = new Lock(input.getText().toString());
+                                        if (LoginActivity.client != null) {
+                                            LoginActivity.client.verifyChatPassword(lock);
+                                        } else {
+                                            CreateAccountActivity.client.verifyChatPassword(lock);
+                                        }
+                                        dialog.cancel();
                                     }
-                                    else{
-                                        CreateAccountActivity.client.verifyChatPassword(lock);
-                                    }
-                                    dialog.cancel();
-                                }
-                            });
-                    alertDialog.show();
+                                });
+                        alertDialog.show();
 
+                    }
                 }
             });
 

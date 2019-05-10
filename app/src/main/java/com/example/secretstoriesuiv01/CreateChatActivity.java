@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class CreateChatActivity extends AppCompatActivity {
     private static ListView lstSearch;
@@ -76,21 +77,50 @@ public class CreateChatActivity extends AppCompatActivity {
 
 
                   int id = ChatFragment.nameAdapter.getCount() + 1;
+                  boolean self = false;
+                  boolean chatExists = false;
 
                   if(LoginActivity.client != null){
-                      checkedUsers.add(LoginActivity.client.getUsername());         // här blir rätt
-                      NewChatInfo chatInfo = new NewChatInfo(id,checkedUsers);
-                      LoginActivity.client.createChat(chatInfo);
-                      Log.d("H", chatInfo.getMembers().toString());
+                      for(String user : checkedUsers){
+                          if(user.equals(LoginActivity.client.getUsername())){
+                              self = true;
+                          }
+                      }
+                      if(self){
+                          Toast.makeText(getApplicationContext(), "Cannot create a chat with yourself.", Toast.LENGTH_LONG).show();
+                          self = false;
+                      }
+                      else if(duplicateChat()){
+                          Toast.makeText(getApplicationContext(), "Chat with selected users already exists.", Toast.LENGTH_LONG).show();
+                      }
+                      else {
+                          checkedUsers.add(LoginActivity.client.getUsername());         // här blir rätt
+                          NewChatInfo chatInfo = new NewChatInfo(id, checkedUsers);
+                          LoginActivity.client.createChat(chatInfo);
+                          Log.d("H", chatInfo.getMembers().toString());
+                      }
 
 
                   }
                 else{
-                      checkedUsers.add(CreateAccountActivity.client.getUsername());
-                      NewChatInfo chatInfo = new NewChatInfo(id,checkedUsers);
-                      CreateAccountActivity.client.createChat(chatInfo);
-                      Log.d("H", chatInfo.getMembers().toString());
-
+                      for(String user : checkedUsers){
+                          if(user.equals(CreateAccountActivity.client.getUsername())){
+                              self = true;
+                          }
+                      }
+                      if(self){
+                          Toast.makeText(getApplicationContext(), "Cannot create a chat with yourself.", Toast.LENGTH_LONG).show();
+                          self = false;
+                      }
+                      else if(duplicateChat()){
+                          Toast.makeText(getApplicationContext(), "Chat with selected users already exists.", Toast.LENGTH_LONG).show();
+                      }
+                      else {
+                          checkedUsers.add(CreateAccountActivity.client.getUsername());
+                          NewChatInfo chatInfo = new NewChatInfo(id, checkedUsers);
+                          CreateAccountActivity.client.createChat(chatInfo);
+                          Log.d("H", chatInfo.getMembers().toString());
+                      }
 
 
                   }
@@ -105,6 +135,30 @@ public class CreateChatActivity extends AppCompatActivity {
     }
     public static void removeUser(String username){
         checkedUsers.remove(username);
+    }
+    public ArrayList<String> getExistingChats(){
+        ArrayList<String> names = new ArrayList<String>();
+        String[] temp = ChatFragment.namesList;
+        for(String name : temp){
+            names.add(name);
+        }
+        return names;
+    }
+    public boolean duplicateChat(){
+        boolean exists = false;
+        ArrayList<String> names1 = getExistingChats();
+        Collections.sort(names1);
+        ArrayList<String> names2 = checkedUsers;
+        Collections.sort(names2);
+        for(String users : names1){
+            if(users != null) {
+                if (users.equals(names2.toString().substring(1, names2.toString().length() - 1))) {
+                    exists = true;
+                }
+            }
+        }
+
+        return exists;
     }
 
 }

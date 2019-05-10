@@ -40,7 +40,7 @@ public class Client extends AppCompatActivity {
 	private Context activityContext;
 
 	
-	public Client(int port, String ip) {
+	public Client() {
 		this.port = port;
 		this.ip = ip;
 
@@ -74,6 +74,7 @@ public class Client extends AppCompatActivity {
 	}
 
 	public void createUser(User user) {
+		this.user = user;
 //		try {
 //			output.writeObject(user);
 //			output.flush();
@@ -96,6 +97,7 @@ public class Client extends AppCompatActivity {
 		}
 	}
 	public void login(User user){
+		this.user = user;
 //		try {
 //			output.writeObject(user);
 //		}
@@ -292,7 +294,7 @@ public class Client extends AppCompatActivity {
 		protected String doInBackground(String... params) {
 			publishProgress("Sleeping..."); // Calls onProgressUpdate()
 			try {
-				String serverAddr =  "192.168.1.104";
+				String serverAddr =  "10.2.19.40";
 				socketClient = new Socket(serverAddr, 6666);
 
 				output = new ObjectOutputStream(socketClient.getOutputStream());

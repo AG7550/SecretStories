@@ -125,8 +125,8 @@ public class ChatFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-    public static void updateAdapter(ArrayAdapter<String> adapter){
-        adapter.notifyDataSetChanged();
+    public static void updateAdapter(){
+        nameAdapter.notifyDataSetChanged();
     }
 
     /**

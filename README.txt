@@ -12,7 +12,13 @@ packages should be automatically downloaded and installed. You may need to clean
 this, Build -> Clean Project. You can run the app either on an emulator or on your phone through usb if 
 it uses min Android 5.0(Lollipop) and max Android 8.1.0(Oreo). Press Run(Shift + F10) and select your 
 preferred platform. To install and run the app on your phone you may need to enable developer options 
-and debugging. Please refer to the this link for directions: https://developer.android.com/studio/debug/dev-options
+and debugging. Please refer to the this link for directions: https://developer.android.com/studio/debug/dev-options. 
+
+### Setting ip address.
+Before starting the emulator, change ip address in the class Client. The ip address should correspond the ip adress the server is running on. 
+
+## Server
+To setup the server, create a identical package as in the uploaded files. Put the files in the pakage. The uploaded files should contain a jar file. Download the jar file and store it somewhere on the computer. Press the created package and build a path by choosing "build path" and then "Configure buildpath". Choose libraries and add add external Jars. Choose the downloaded jar file. Start the server by firs choosing a port in the main method, and then run. If you are not using a macbook there could come up an exception. If so, in the class ConnectDB change "com.mysql.jdbc.Driver" to "com.mysql.cj.jdbc.Driver".
 
 ## Usage
 
@@ -22,13 +28,12 @@ views. Other than the "To Login"-button on the Home screen, there is currently n
 functionality to any buttons. When pressing the "To Login"-button, a login screen is opened. 
 
 #### Login
-Here, email and password can be entered to attept login. Press "Create new account" to open the 
+Here, usernameand password for the account can be entered to attept login. Press "Create new account" to open the 
 registration window. 
-To login use Email: username@email.com Password: password
+To login use Username: username Password: password
 
 #### Create Account
-Here user information can be entered. Currently this information is not stored. Both
-"CREATE ACCOUNT" and "Already have an Account? Login" takes you back to the login screen.
+Here user information can be entered. To create an account enter a username, password for locking chats and a password for the account. Then press the create account button. 
  
 
 ## Trouble shooting
