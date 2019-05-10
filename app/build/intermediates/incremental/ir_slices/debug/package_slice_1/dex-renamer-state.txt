@@ -1,4 +1,0 @@
-#Sun Apr 28 18:03:28 CEST 2019
-base.0=C\:\\Users\\alili\\Desktop\\SecretStoriesUI8\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\1
-path.0=classes.dex
-renamed.0=classes.dex
