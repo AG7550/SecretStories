@@ -120,6 +120,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (LoginActivity.client != null) {
+            LoginActivity.client.logOut();
+        } else {
+            CreateAccountActivity.client.logOut();
+        }
+    }
 
     public void toLogin(View view){
         startActivity(new Intent(this, LoginActivity.class));
@@ -140,7 +149,9 @@ public class MainActivity extends AppCompatActivity {
                     tempName += attach + ", ";
                 }
             }
-            names[i] = tempName.substring(0, tempName.length() - 2);
+            if(!(names.length <= 0 || names == null)){
+                names[i] = tempName.substring(0, tempName.length() - 2);
+            }
         }
     }
     public static void setNames(String[] list){

@@ -184,7 +184,9 @@ public class Client extends AppCompatActivity {
 						@Override
 						public void run() {
 							ChattingActivity.list.add(message.getSender() + ":" + message.getText());
-							ChattingActivity.chatAdapter.notifyDataSetChanged();
+							if(ChattingActivity.chatAdapter != null){
+								ChattingActivity.chatAdapter.notifyDataSetChanged();
+							}
 						}
 					});
 					//chatIntent.putExtra(txtMessage, "newMessage"); //Detta ska hända innan "getExtra" i chattingActivity när man trycker på "send" knappen
@@ -294,7 +296,7 @@ public class Client extends AppCompatActivity {
 		protected String doInBackground(String... params) {
 			publishProgress("Sleeping..."); // Calls onProgressUpdate()
 			try {
-				String serverAddr =  "10.2.19.40";
+				String serverAddr =  "10.2.29.99";
 				socketClient = new Socket(serverAddr, 6666);
 
 				output = new ObjectOutputStream(socketClient.getOutputStream());

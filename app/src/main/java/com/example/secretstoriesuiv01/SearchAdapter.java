@@ -48,6 +48,7 @@ public class SearchAdapter extends ArrayAdapter<String> {
     CompoundButton.OnCheckedChangeListener mListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
             if(buttonView.isChecked()){
                 setUser(buttonView.getText().toString());
             }
