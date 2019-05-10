@@ -120,6 +120,11 @@ public class Client extends AppCompatActivity {
 			new GetAllUsersTask().execute();
 		}catch(Exception e){e.printStackTrace();}
 	}
+	public void logOut(Context context){
+		try{
+			new LogOutUserTask().execute();
+		}catch(Exception e){e.printStackTrace();}
+	}
 
 	public void createChat(NewChatInfo chatInfo){
 		try{
@@ -204,7 +209,11 @@ public class Client extends AppCompatActivity {
 						}
 					});
 
-				}else if(response instanceof ArrayList ) {
+				}
+				else if(response.equals("Logout")){
+					activityContext.startActivity(new Intent(activityContext, LoginActivity.class));
+				}
+				else if(response instanceof ArrayList ) {
 					ArrayList<String> chatMembers = (ArrayList<String>) response;
 					if(chatMembers == null || chatMembers.size() == 0){
 						String[] users = new String[1];
@@ -249,21 +258,22 @@ public class Client extends AppCompatActivity {
 				else if( response instanceof Lock){
 					Lock lock = (Lock) response;
 					Boolean valid = lock.getValid();
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							if(CustomAdapter.ativeChat.isEnabled()){
-								CustomAdapter.ativeChat.setEnabled(false);
+					if(valid) {
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								if (CustomAdapter.ativeChat.isEnabled()) {
+									CustomAdapter.ativeChat.setEnabled(false);
 //								CustomAdapter.activeLockBtn.setBackground(getResources().getDrawable(R.drawable.baseline_lock_black_18dp));
-							}
-							else {
-								CustomAdapter.ativeChat.setEnabled(true);
+								} else {
+									CustomAdapter.ativeChat.setEnabled(true);
 //								CustomAdapter.activeLockBtn.setBackground(getResources().getDrawable(R.drawable.baseline_lock_open_black_18dp));
+								}
+
+
 							}
-
-
-						}
-					});
+						});
+					}
 
 //					if(valid){
 //						CustomAdapter.ativeChat.setEnabled(true);
@@ -287,7 +297,7 @@ public class Client extends AppCompatActivity {
 		protected String doInBackground(String... params) {
 			publishProgress("Sleeping..."); // Calls onProgressUpdate()
 			try {
-				String serverAddr =  "10.2.29.99";
+				String serverAddr =  "10.2.19.40";
 				socketClient = new Socket(serverAddr, 6666);
 
 				output = new ObjectOutputStream(socketClient.getOutputStream());
@@ -558,7 +568,6 @@ public class Client extends AppCompatActivity {
 					"Wait for it");
 		}
 	}
-
 	private class VerifyChatPassword extends AsyncTask<String, Void, String> {
 
 		private String resp;
@@ -575,6 +584,42 @@ public class Client extends AppCompatActivity {
 			try {
 
 				output.writeObject(lock);
+				output.flush();
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
+			return resp;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			// execution of result of Long time consuming operation
+			progressDialog.dismiss();
+		}
+
+
+		@Override
+		protected void onPreExecute() {
+			progressDialog = ProgressDialog.show(activityContext,
+					"ProgressDialog",
+					"Wait for it");
+		}
+	}
+
+	private class LogOutUserTask extends AsyncTask<String, Void, String> {
+
+		private String resp;
+		ProgressDialog progressDialog;
+
+		public LogOutUserTask() {
+		}
+
+		@Override
+		protected String doInBackground(String... params) {// Calls onProgressUpdate()
+			try {
+
+				output.writeObject("Logout");
 				output.flush();
 			}
 			catch(IOException e) {

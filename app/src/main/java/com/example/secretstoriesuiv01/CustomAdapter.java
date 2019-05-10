@@ -2,15 +2,19 @@ package com.example.secretstoriesuiv01;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -43,26 +47,40 @@ public class CustomAdapter extends ArrayAdapter<String> {
             btnLock.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final Dialog dialog = new Dialog(getContext());
-                    dialog.setContentView(R.layout.dialog_template);
-                    Button lockBtn = dialog.findViewById(R.id.lockBtn);
-                    activeLockBtn = lockBtn;
-                    ativeChat = btnName;        // den som clienten ska ändra
-                    final EditText lockPassword = dialog.findViewById(R.id.lockPassword);
-                    dialog.show();
-                    lockBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Lock lock = new Lock(lockPassword.getText().toString());
-                            if(LoginActivity.client != null){
-                                LoginActivity.client.verifyChatPassword(lock);
-                            }
-                            else{
-                                CreateAccountActivity.client.verifyChatPassword(lock);
-                            }
-                            dialog.cancel();
-                        }
-                    });
+                    ativeChat = btnName;
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+
+                    //AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+
+                    // Setting Dialog Title
+                    alertDialog.setTitle("PASSWORD");
+
+                    // Setting Dialog Message
+                    alertDialog.setMessage("Enter Password");
+
+                    final EditText input = new EditText(getContext());
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT);
+                    input.setLayoutParams(lp);
+                    alertDialog.setView(input);
+                    //alertDialog.setView(input);
+                    // Setting Positive "Yes" Button
+                    alertDialog.setPositiveButton("Unlock chat",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int which) {
+                                    // Write your code here to execute after dialog
+                                    Lock lock = new Lock(input.getText().toString());
+                                    if(LoginActivity.client != null){
+                                        LoginActivity.client.verifyChatPassword(lock);
+                                    }
+                                    else{
+                                        CreateAccountActivity.client.verifyChatPassword(lock);
+                                    }
+                                    dialog.cancel();
+                                }
+                            });
+                    alertDialog.show();
 
                 }
             });
@@ -79,5 +97,8 @@ public class CustomAdapter extends ArrayAdapter<String> {
         }
 
         return customView;
+    }
+    public static void setAtiveChat(boolean value){
+        ativeChat.setEnabled(value);
     }
 }

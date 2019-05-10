@@ -31,7 +31,7 @@
             android:layout_height="50dp"
             android:background="@drawable/logouticon"
             android:gravity="start"
-            android:layout_marginRight="-50"/>
+            android:layout_marginRight="-50dp"/>
 
         <TextView
             android:id="@+id/toolbartitle"
@@ -55,5 +55,14 @@
 
 
     </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottomnavigation"
+        android:animateLayoutChanges="true">
+
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

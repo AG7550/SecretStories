@@ -85,6 +85,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            Button logoutButton = (Button) findViewById(R.id.logoutButton);
+            logoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(LoginActivity.client != null){
+                       LoginActivity.client.logOut(v.getContext());
+                    }
+                    else{
+                        CreateAccountActivity.client.logOut(v.getContext());
+                    }
+                }
+            });
+
 
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
