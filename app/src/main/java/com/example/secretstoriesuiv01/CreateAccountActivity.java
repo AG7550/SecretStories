@@ -11,6 +11,8 @@ public class CreateAccountActivity extends AppCompatActivity {
     private EditText username;
     private EditText password;
     private EditText chatPassword;
+    private EditText password2;
+    private EditText chatPassword2;
     public static Client client;
     private ConnectDB database;
 
@@ -22,6 +24,8 @@ public class CreateAccountActivity extends AppCompatActivity {
         username = findViewById(R.id.input_username);
         password = findViewById(R.id.input_password);
         chatPassword = findViewById(R.id.chat_password);
+        password2 = findViewById(R.id.input_password2);
+        chatPassword2 = findViewById(R.id.chat_password2);
 
 
          // "192.168.1.104"
@@ -38,15 +42,26 @@ public class CreateAccountActivity extends AppCompatActivity {
         String userString = username.getText().toString();
         String passwordString = password.getText().toString();
         String chatPasswordString = chatPassword.getText().toString();
+        String passwordString2 = password2.getText().toString();
+        String chatPasswordString2 = chatPassword2.getText().toString();
 
-        if(userString.length() > 2 && passwordString.length() > 4 && chatPasswordString.length() > 2){
+        if(!(passwordString.equals(passwordString2) || chatPasswordString.equals(chatPasswordString2))){
+            Toast.makeText(this, "Passwords do not match.", Toast.LENGTH_LONG).show();
+        }
+        else if(userString.length() <= 2){
+            Toast.makeText(this, "Username cannot be under 2 characters.", Toast.LENGTH_LONG).show();
+        }
+        else if(passwordString.length() <= 4){
+            Toast.makeText(this, "Password cannot be under 5 characters.", Toast.LENGTH_LONG).show();
+        }
+        else if(chatPasswordString.length() <= 4){
+            Toast.makeText(this, "Password for chat-lock cannot be under 5 characters", Toast.LENGTH_LONG).show();
+        }
+        else{
             User user = new User(userString, passwordString, chatPasswordString);
             client = new Client();
             client.connect(this);
             client.createUser(user);
-        }
-        else{
-            Toast.makeText(this, "Username, Password or Chat Password are to short.", Toast.LENGTH_SHORT).show();
         }
 
 

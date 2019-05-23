@@ -1,5 +1,6 @@
 package com.example.secretstoriesuiv01;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            Button logoutButton = (Button) findViewById(R.id.logoutButton);
+            final Button logoutButton = (Button) findViewById(R.id.logoutButton);
             logoutButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -120,15 +121,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (LoginActivity.client != null) {
-            LoginActivity.client.logOut();
-        } else {
-            CreateAccountActivity.client.logOut();
-        }
-    }
 
     public void toLogin(View view){
         startActivity(new Intent(this, LoginActivity.class));
@@ -149,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                     tempName += attach + ", ";
                 }
             }
-            if(!(names.length <= 0 || names == null)){
+            if(!(names.length <= 0 || names == null)) {
                 names[i] = tempName.substring(0, tempName.length() - 2);
             }
         }
@@ -157,5 +149,4 @@ public class MainActivity extends AppCompatActivity {
     public static void setNames(String[] list){
         names = list;
     }
-
 }

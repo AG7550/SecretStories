@@ -49,8 +49,10 @@ public class ChatAdapter extends ArrayAdapter<String> {
                 if(temp.length > 1){
                     customView = nameInflator.inflate(R.layout.their_message, parent, false);
                     TextView tvwBubble = customView.findViewById(R.id.message_body_left);
+                    TextView tvwUsername = customView.findViewById(R.id.message_body_left_sender);
                     tvwBubble.setBackground(getContext().getDrawable(R.drawable.their_message));
                     tvwBubble.setText(temp[1]);
+                    tvwUsername.setText(temp[0]);
                 }
 
             }

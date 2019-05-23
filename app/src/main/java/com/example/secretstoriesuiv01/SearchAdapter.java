@@ -36,19 +36,19 @@ public class SearchAdapter extends ArrayAdapter<String> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        LayoutInflater nameInflator = LayoutInflater.from(this.context);
-        View customView = nameInflator.inflate(R.layout.checkbox_item, parent, false);
-        CheckBox cbox = (CheckBox) customView.findViewById(R.id.checkBox);
-        cbox.setText(users.get(position));
-        cbox.setTag(Integer.valueOf(position));
-        cbox.setOnCheckedChangeListener(mListener);
-        return customView;
+
+            LayoutInflater nameInflator = LayoutInflater.from(this.context);
+            convertView = nameInflator.inflate(R.layout.checkbox_item, parent, false);
+            CheckBox cbox = (CheckBox) convertView.findViewById(R.id.checkBox);
+            cbox.setText(users.get(position));
+            cbox.setTag(Integer.valueOf(position));
+            cbox.setOnCheckedChangeListener(mListener);
+            return convertView;
     }
 
     CompoundButton.OnCheckedChangeListener mListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
             if(buttonView.isChecked()){
                 setUser(buttonView.getText().toString());
             }

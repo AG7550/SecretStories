@@ -6,20 +6,22 @@ import java.util.Date;
 
 
 public class Message implements Serializable {
-	private int messageID;
+	private int key;
 	private String text;
+	private byte[] encryptedMessage;
 	private String sender;
 	private ArrayList<String> recipients;
 	private Date dateSent;
 
 	//If the user sends a message-object without a picture
-	
-	public Message(String text, String sender, ArrayList<String> recipients) {
+
+	public Message(String text, String sender, ArrayList<String> recipients, int key) {
 		this.text = text;
 		this.sender = sender;
 		this.recipients = recipients;
+		this.key = key;
 	}
-	
+
 	//If the user sends a message-object with a picture
 	//public Message2(int id, String text, String sender, Object[] recipients) {
 	//	this(id, text, sender, recipients);
@@ -52,7 +54,7 @@ public class Message implements Serializable {
 //		return image;
 //	}
 
-//	public void setImage(ImageIcon image) {
+	//	public void setImage(ImageIcon image) {
 //		this.image = image;
 //	}
 	public void setDateSent(Date date) {
@@ -61,9 +63,18 @@ public class Message implements Serializable {
 	public Date getDateSent(Date date) {
 		return dateSent;
 	}
-	public int getMessageID() {
-		return messageID;
+	public int getKey() {
+		return key;
 	}
-	
+	public void setKey(int key) {
+		this.key = key;
+	}
+	public void setEncryptedMessage(byte[] message){
+		this.encryptedMessage = message;
+	}
+	public byte[] getEncryptedMessage(){
+		return encryptedMessage;
+	}
+
 
 }

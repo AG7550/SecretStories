@@ -3,9 +3,11 @@ package com.example.secretstoriesuiv01;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
+
+import static com.example.secretstoriesuiv01.R.drawable.baseline_lock_open_black_18dp;
 
 public class CustomAdapter extends ArrayAdapter<String> {
     private BtnClickListener mClickListener = null;
@@ -49,8 +53,13 @@ public class CustomAdapter extends ArrayAdapter<String> {
                 public void onClick(View v) {
                     if (btnName.isEnabled()) {
                         btnName.setEnabled(false);
+                        Drawable img = getContext().getDrawable(R.drawable.baseline_lock_black_18dp);
+                        img.setBounds(0,0,100,90);
+                        CustomAdapter.activeLockBtn.setCompoundDrawables(null, null, null, img );
+                        Toast.makeText(getContext(), "Chat has been locked.", Toast.LENGTH_SHORT).show();
                     } else {
                         ativeChat = btnName;
+                        activeLockBtn = btnLock;
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
 
                         //AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
@@ -62,6 +71,7 @@ public class CustomAdapter extends ArrayAdapter<String> {
                         alertDialog.setMessage("Enter Password");
 
                         final EditText input = new EditText(getContext());
+                        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.MATCH_PARENT);

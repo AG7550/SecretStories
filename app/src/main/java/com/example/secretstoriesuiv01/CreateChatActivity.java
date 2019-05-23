@@ -26,6 +26,7 @@ public class CreateChatActivity extends AppCompatActivity {
     public static ArrayAdapter<String> adapter;
     public static ArrayList<String> data = new ArrayList<String>();
     public static ArrayList<String> checkedUsers = new ArrayList<String>();
+    public static int convoID;
 
 
 
@@ -94,6 +95,7 @@ public class CreateChatActivity extends AppCompatActivity {
                           Toast.makeText(getApplicationContext(), "Chat with selected users already exists.", Toast.LENGTH_LONG).show();
                       }
                       else {
+                          convoID = id;
                           checkedUsers.add(LoginActivity.client.getUsername());         // här blir rätt
                           NewChatInfo chatInfo = new NewChatInfo(id, checkedUsers);
                           LoginActivity.client.createChat(chatInfo);
@@ -116,6 +118,7 @@ public class CreateChatActivity extends AppCompatActivity {
                           Toast.makeText(getApplicationContext(), "Chat with selected users already exists.", Toast.LENGTH_LONG).show();
                       }
                       else {
+                          convoID = id;
                           checkedUsers.add(CreateAccountActivity.client.getUsername());
                           NewChatInfo chatInfo = new NewChatInfo(id, checkedUsers);
                           CreateAccountActivity.client.createChat(chatInfo);

@@ -26,8 +26,12 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Observable;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 public class Client extends AppCompatActivity {
 	private Socket socketClient;
@@ -169,7 +173,22 @@ public class Client extends AppCompatActivity {
 	 * 		}
 	 * 	}
 	 */
-
+	private void decryptMessage(Message message) {
+		try {
+			byte[] encrypted = message.getEncryptedMessage();
+			String key = String.valueOf(message.getKey());
+			for (int i = key.length(); i < 16; i++) {
+				key += "A";
+			}
+			Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
+			Cipher cipher = Cipher.getInstance("AES");
+			// encrypt the text
+			cipher.init(Cipher.DECRYPT_MODE, aesKey);
+			String decrypted = new String(cipher.doFinal(encrypted));
+			message.setText(decrypted);
+		}
+		catch ( Exception e){e.printStackTrace();}
+	}
 	private class Listener extends Thread {
 		Intent chatIntent = new Intent(activityContext, ChattingActivity.class);
 		public void run() {
@@ -179,12 +198,15 @@ public class Client extends AppCompatActivity {
 				response = (Object) input.readObject();
 				if(response instanceof Message) {
 					final Message message = (Message) response;
+					decryptMessage(message);
+
+
 					runOnUiThread(new Runnable(){
 
 						@Override
 						public void run() {
 							ChattingActivity.list.add(message.getSender() + ":" + message.getText());
-							if(ChattingActivity.chatAdapter != null){
+							if(ChattingActivity.chatAdapter != null) {
 								ChattingActivity.chatAdapter.notifyDataSetChanged();
 							}
 						}
@@ -194,7 +216,11 @@ public class Client extends AppCompatActivity {
 				else if(response instanceof Boolean){
 					Boolean exists = (Boolean) response;
 					if(exists){
-						Toast.makeText(activityContext, "User already exists. Please choose a different usename.", Toast.LENGTH_SHORT);
+						runOnUiThread(new Runnable() {
+							public void run() {
+								Toast.makeText(activityContext, "Username already exists, please choose a different username.", Toast.LENGTH_LONG).show();
+							}
+						});
 					}
 					else{
 						// Öppna fönster blabla
@@ -204,15 +230,13 @@ public class Client extends AppCompatActivity {
 						MainActivity.setNames(users);
 						activityContext.startActivity(new Intent(activityContext, MainActivity.class));
 					}
-				}else if(response.equals("Failed")){		//funkar ej måste använda instace
+				}
+				else if(response.equals("Failed")){		//funkar ej måste använda instace
 					runOnUiThread(new Runnable() {
-						@Override
 						public void run() {
-						Toast.makeText(activityContext, "Login failed. Please try again", Toast.LENGTH_SHORT);
-
+							Toast.makeText(activityContext, "Wrong username or password, please try again.", Toast.LENGTH_LONG).show();
 						}
 					});
-
 				}
 				else if(response.equals("Logout")){
 					activityContext.startActivity(new Intent(activityContext, LoginActivity.class));
@@ -263,9 +287,17 @@ public class Client extends AppCompatActivity {
 							public void run() {
 								if (CustomAdapter.ativeChat.isEnabled()) {
 									CustomAdapter.ativeChat.setEnabled(false);
-//								CustomAdapter.activeLockBtn.setBackground(getResources().getDrawable(R.drawable.baseline_lock_black_18dp));
+//									CustomAdapter.activeLockBtn.setBackground(getResources().getDrawable(R.drawable.baseline_lock_black_18dp));
 								} else {
 									CustomAdapter.ativeChat.setEnabled(true);
+									Drawable img = activityContext.getDrawable(R.drawable.baseline_lock_open_black_18dp);
+									img.setBounds(0,0,100,90);
+									CustomAdapter.activeLockBtn.setCompoundDrawables(null, null, null, img );
+									runOnUiThread(new Runnable() {
+										public void run() {
+											Toast.makeText(activityContext, "Chat unlocked!", Toast.LENGTH_LONG).show();
+										}
+									});
 //								CustomAdapter.activeLockBtn.setBackground(getResources().getDrawable(R.drawable.baseline_lock_open_black_18dp));
 								}
 
@@ -296,7 +328,7 @@ public class Client extends AppCompatActivity {
 		protected String doInBackground(String... params) {
 			publishProgress("Sleeping..."); // Calls onProgressUpdate()
 			try {
-				String serverAddr =  "10.2.29.99";
+				String serverAddr =  "10.2.14.88";
 				socketClient = new Socket(serverAddr, 6666);
 
 				output = new ObjectOutputStream(socketClient.getOutputStream());
@@ -471,6 +503,9 @@ public class Client extends AppCompatActivity {
 		@Override
 		protected String doInBackground(String... params) {// Calls onProgressUpdate()
 			try {
+				byte[] encryptedMessage = encryptMessage(message.getText(), message.getKey());
+				message.setEncryptedMessage(encryptedMessage);
+				message.setText(new String(encryptedMessage));
 
 				output.writeObject(message);
 				output.flush();
@@ -493,6 +528,24 @@ public class Client extends AppCompatActivity {
 			progressDialog = ProgressDialog.show(activityContext,
 					"ProgressDialog",
 					"Wait for it");
+		}
+		private byte[] encryptMessage(String message, int id){
+			try {
+
+				String key = String.valueOf(id);
+				for (int i = key.length(); i < 16; i++) {
+					key += "A";
+				}
+				Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
+				Cipher cipher = Cipher.getInstance("AES");
+				// encrypt the text
+				cipher.init(Cipher.ENCRYPT_MODE, aesKey);
+				byte[] encrypted = cipher.doFinal(message.getBytes());
+				return encrypted;
+			}
+			catch ( Exception e){e.printStackTrace();}
+
+			return null;
 		}
 	}
 	private class GetAllUsersTask extends AsyncTask<String, Void, String> {
