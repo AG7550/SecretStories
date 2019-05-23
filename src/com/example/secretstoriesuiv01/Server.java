@@ -7,7 +7,11 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.Key;
 import java.util.ArrayList;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 
 /**
@@ -72,6 +76,25 @@ public class Server {
 			socket.close();
 		}catch(IOException e) {e.printStackTrace();}
 	}
+	public String decryptMessage(Message message) {
+		try {
+			byte[] encrypted = message.getEncryptedMessage();
+			String key = String.valueOf(message.getKey());
+			for (int i = key.length(); i < 16; i++) {
+				key += "A";
+			}
+			Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
+			Cipher cipher = Cipher.getInstance("AES");
+			// encrypt the text
+			cipher.init(Cipher.DECRYPT_MODE, aesKey);
+            String decrypted = new String(cipher.doFinal(encrypted));
+            message.setText(decrypted);
+            return decrypted;
+		}
+		catch ( Exception e){e.printStackTrace();}
+
+		return message.getText();
+	}
 
 	private class ClientHandler extends Thread{
 		private ObjectInputStream input;
@@ -113,8 +136,6 @@ public class Server {
 							if(!handlerExist) {
 								handlers.add(this);
 							}
-
-
 						}
 						else {
 							output.writeObject("Failed");
@@ -141,9 +162,11 @@ public class Server {
 
 					else if(object instanceof Message) {
 						Message message = (Message) object;
+						String decryptedMessage = decryptMessage(message);
 						sendMessage(message);
 						ArrayList<String> rec = message.getRecipients();
 						System.out.println(rec.toString());
+						message.setText(new String(message.getEncryptedMessage()));
 						for(String reci : rec) {
 							for(ClientHandler handler:handlers) {
 								String user = handler.user.getUsername();

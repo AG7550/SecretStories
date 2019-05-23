@@ -1,24 +1,27 @@
 package com.example.secretstoriesuiv01;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
 
 public class Message implements Serializable {
-	private int messageID;
+	private int key;
 	private String text;
 	private String sender;
+	private byte[] encryptedMessage;
 	private ArrayList<String> recipients;
 	private Date dateSent;
 
 	//If the user sends a message-object without a picture
 	
-	public Message(String text, String sender, ArrayList<String> recipients) {
+	public Message(String text, String sender, ArrayList<String> recipients, int key) {
 		this.text = text;
 		this.sender = sender;
 		this.recipients = recipients;
+		this.key = key;
 	}
 	
 	//If the user sends a message-object with a picture
@@ -62,9 +65,17 @@ public class Message implements Serializable {
 	public Date getDateSent(Date date) {
 		return dateSent;
 	}
-	public int getMessageID() {
-		return messageID;
+	public int getKey() {
+		return key;
 	}
-	
+	public void setKey(int key) {
+		this.key = key;
+	}
+	public void setEncryptedMessage(byte[] message){
+		this.encryptedMessage = message;
+	}
+	public byte[] getEncryptedMessage(){
+		return encryptedMessage;
+	}
 
 }

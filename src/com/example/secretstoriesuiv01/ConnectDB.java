@@ -1,5 +1,9 @@
 package com.example.secretstoriesuiv01;
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.security.Key;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -10,6 +14,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JOptionPane;
 
 
@@ -27,7 +33,7 @@ public class ConnectDB {
 	}
 	public static Connection getConnection() {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 				connection  = DriverManager.getConnection("jdbc:mysql://ddwap.mah.se/ai1585", "ai1585", "Aliasse251");
 				return connection;
 		} catch (Exception e) {
@@ -383,15 +389,35 @@ public class ConnectDB {
 			else {return false;
 			}		
 	}
-
+	public static String getAESKey(int id) {
+		String key = String.valueOf(id);
+		for(int i = key.length(); i<16; i++) {
+			key += "A";
+		}
+		return key;
+	}
 	
 	public static void main(String[] args) {
-		ConnectDB db = new ConnectDB();
-//		ArrayList<String> users = new ArrayList<String>();
-//		users.add("Sandra");
-//		users.add("Jerry");
-//		int id = db.getChatIDFromConversation("Ali", users);
-//		db.insertConversation(id, "Ali:meddelande1");
+			try {
+		  String text = "Hello World";
+          String key = "Bar12345Bar12345"; // 128 bit key
+          // Create key and cipher
+          Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
+          Cipher cipher = Cipher.getInstance("AES");
+          // encrypt the text
+          cipher.init(Cipher.ENCRYPT_MODE, aesKey);
+          byte[] encrypted = cipher.doFinal(text.getBytes());
+          System.out.println(encrypted);
+          String s = new String(encrypted);
+          System.out.println(s);
+          System.out.println(s.getBytes());
+          
+			}
+	        catch(Exception e) 
+	        {
+	            e.printStackTrace();
+	        }
+		
 	}
 }
 
