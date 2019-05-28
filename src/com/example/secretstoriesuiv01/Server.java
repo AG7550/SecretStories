@@ -49,7 +49,6 @@ public class Server {
 				}catch(IOException | ClassNotFoundException e) {
 					e.printStackTrace();
 				}
-
 			}
 		}
 	}
@@ -57,7 +56,6 @@ public class Server {
 	public boolean verifyUser(String username) {
 		return database.verifyUser(username);
 	}
-
 
 	public void sendMessage(Message message) {
 		String user = message.getSender();
@@ -76,6 +74,7 @@ public class Server {
 			socket.close();
 		}catch(IOException e) {e.printStackTrace();}
 	}
+	
 	public String decryptMessage(Message message) {
 		try {
 			byte[] encrypted = message.getEncryptedMessage();
@@ -109,7 +108,6 @@ public class Server {
 			}catch(IOException e) {
 				e.printStackTrace();
 			}
-
 		}
 
 		public void run() {
@@ -123,7 +121,7 @@ public class Server {
 						String[] stringUser = (String[]) object;
 						boolean exist = database.verifyLogin(stringUser[0], stringUser[1]);
 						if(exist == true) {
-							user = new User(stringUser[0], stringUser[1],"");
+							user = new User(stringUser[0], stringUser[1], "");
 							ArrayList<String> chatMembers = database.getConversationNames(stringUser[0]);
 							output.writeObject(chatMembers);
 							output.flush();
@@ -157,8 +155,8 @@ public class Server {
 							output.writeObject(false);
 							output.flush();
 							handlers.add(this);
-
-						}}
+						}
+					}
 
 					else if(object instanceof Message) {
 						Message message = (Message) object;
@@ -174,7 +172,6 @@ public class Server {
 									handler.output.writeObject(message);
 									handler.output.flush();
 								}
-
 							}
 						}
 						output.writeObject(message);
@@ -182,11 +179,11 @@ public class Server {
 						// Om någon reciver inte är online så ska en notifiering skickas. 
 					}
 					else if(object instanceof Conversations) {
-						Conversations convo = (Conversations) object;
-						int id = database.getChatIDFromConversation(convo.getChatMembers());
+						Conversations conversations = (Conversations) object;
+						int id = database.getChatIDFromConversation(conversations.getChatMembers());
 						ArrayList<String> chat = database.getChat(id);
-						convo.setConversation(chat);
-						output.writeObject(convo);
+						conversations.setConversation(chat);
+						output.writeObject(conversations);
 						output.flush();
 					}
 					// TODO ta bort sig själv från userArray
@@ -213,7 +210,6 @@ public class Server {
 							output.flush();
 							disconnect(socket);
 						}
-
 					}
 					else if(object instanceof NewChatInfo) {
 						NewChatInfo chatInfo = (NewChatInfo) object;		
@@ -228,11 +224,10 @@ public class Server {
 								}
 							}
 						}
-
 					}
 					else if(object instanceof Lock) {
 						Lock lock = (Lock) object;
-						Boolean resp = database.verifyChattPassword(this.user.getUsername(),lock.getpassword());
+						Boolean resp = database.verifyChattPassword(this.user.getUsername(), lock.getpassword());
 						lock.setValid(resp);
 						output.writeObject(lock);
 						output.flush();
@@ -245,14 +240,10 @@ public class Server {
 				}
 			}		
 		}
-
-
 	}
 	public static void main(String[] args) throws UnknownHostException {
 		Server server = new Server(6666); 
 		//		InetAddress a = InetAddress.getLocalHost();
 		//		System.out.println(a.getHostAddress());
 	}
-
-
 }
