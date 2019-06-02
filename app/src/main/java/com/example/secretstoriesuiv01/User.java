@@ -2,20 +2,24 @@ package com.example.secretstoriesuiv01;
 
 import java.io.Serializable;
 import java.security.MessageDigest;
-
+/**
+ *
+ * @author Fredrik Johnson, Ali Menhem
+ * User class, contains information about a user
+ */
 public class User implements Serializable {
 	private String username;
 	private String password;
 	private String chat_password;
 	private String[] contacts;
 	private static final long serialVersionUID = 4568216;
-	
+
 	public User(String username, String password, String chat_password) {
 		this.username = username;
 		this.password = getSHA256Hash(password);
-		this.chat_password = chat_password;
+		this.chat_password = getSHA256Hash(chat_password);
 	}
-	
+
 	public String getUsername() {
 		return this.username;
 	}
@@ -33,7 +37,9 @@ public class User implements Serializable {
 	public String[] getContacts() {
 		return contacts;
 	}
-
+	/**
+	 * Encrypts a string value (SHA256)
+	 */
 	private String getSHA256Hash(String password) {
 		String result = null;
 		try {
@@ -43,6 +49,12 @@ public class User implements Serializable {
 		}catch(Exception e) {e.printStackTrace();}
 		return null;
 	}
+	public void setChatPassword(String password) {
+		chat_password = password;
+	}
+	/**
+	 * This method converts a byte array to hex value
+	 */
 	private String  bytesToHex(byte[] hash) {
 		StringBuilder sb = new StringBuilder();
 		for (byte b : hash) {
@@ -50,7 +62,4 @@ public class User implements Serializable {
 		}
 		return sb.toString();
 	}
-	
-
-
 }

@@ -20,6 +20,10 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * @author Sandra Smrekar, Klara Rosengren
+ * Activity for creating chats
+ */
 public class CreateChatActivity extends AppCompatActivity {
     private static ListView lstSearch;
     private EditText editSearch;
@@ -49,9 +53,6 @@ public class CreateChatActivity extends AppCompatActivity {
         lstSearch.setAdapter(adapter);
         lstSearch.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
-
-
-
         editSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -69,7 +70,6 @@ public class CreateChatActivity extends AppCompatActivity {
 
             }
         });
-
 
         final Button createBtn = findViewById(R.id.createChatbtn);
         createBtn.setOnClickListener(new View.OnClickListener() {
@@ -127,7 +127,6 @@ public class CreateChatActivity extends AppCompatActivity {
 
 
                   }
-                // skriva till servern och lägga till chat
             }
 
         });

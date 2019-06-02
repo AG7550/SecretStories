@@ -22,6 +22,10 @@ import org.w3c.dom.Text;
 
 import static com.example.secretstoriesuiv01.R.drawable.baseline_lock_open_black_18dp;
 
+/**
+ * @author Ali Menhem
+ * This class handles the display of a users existing chats
+ */
 public class CustomAdapter extends ArrayAdapter<String> {
     private BtnClickListener mClickListener = null;
     public static Button ativeChat;
@@ -53,6 +57,8 @@ public class CustomAdapter extends ArrayAdapter<String> {
                 public void onClick(View v) {
                     if (btnName.isEnabled()) {
                         btnName.setEnabled(false);
+                        activeLockBtn = btnLock;
+                        ativeChat = btnName;
                         Drawable img = getContext().getDrawable(R.drawable.baseline_lock_black_18dp);
                         img.setBounds(0,0,100,90);
                         CustomAdapter.activeLockBtn.setCompoundDrawables(null, null, null, img );
@@ -83,7 +89,7 @@ public class CustomAdapter extends ArrayAdapter<String> {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         // Write your code here to execute after dialog
-                                        Lock lock = new Lock(input.getText().toString());
+                                        Lock lock = new Lock("");
                                         if (LoginActivity.client != null) {
                                             LoginActivity.client.verifyChatPassword(lock);
                                         } else {

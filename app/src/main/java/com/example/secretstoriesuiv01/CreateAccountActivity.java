@@ -6,6 +6,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * @author Sandra Smrekar, Ali Menhem
+ * Activity for creating an account and reads inputs
+ */
 public class CreateAccountActivity extends AppCompatActivity {
 
     private EditText username;
@@ -48,7 +52,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         if(!(passwordString.equals(passwordString2) || chatPasswordString.equals(chatPasswordString2))){
             Toast.makeText(this, "Passwords do not match.", Toast.LENGTH_LONG).show();
         }
-        else if(userString.length() <= 2){
+        else if(userString.length() < 2){
             Toast.makeText(this, "Username cannot be under 2 characters.", Toast.LENGTH_LONG).show();
         }
         else if(passwordString.length() <= 4){
@@ -62,6 +66,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             client = new Client();
             client.connect(this);
             client.createUser(user);
+            client.setUser(user);
         }
 
 

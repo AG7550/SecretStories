@@ -2,6 +2,8 @@ package com.example.secretstoriesuiv01;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import java.util.List;
 
 
 /**
+ * @author Fredrik Johnson
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link ChatFragment.OnFragmentInteractionListener} interface
@@ -148,4 +151,5 @@ public class ChatFragment extends Fragment {
         lvwUsers.setClickable(false);
         lvwUsers.setEnabled(false);
     }
+
 }

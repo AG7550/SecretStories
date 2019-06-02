@@ -8,6 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -28,11 +31,16 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.Key;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Observable;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * author Ali Menhem, Sandra Smrekar, Jerry Rosengren, Klara Rosengren, Fredrik Johnson
+ * Client class, handles connection between server
+ */
 public class Client extends AppCompatActivity {
 	private Socket socketClient;
 	private ObjectInputStream input;
@@ -49,22 +57,12 @@ public class Client extends AppCompatActivity {
 		this.ip = ip;
 
 	}
-	
+
+	/**
+	 * Connects a user to server and saves the users activity context (to interact with UI)
+	 */
 	public void connect(Context context) {
 		activityContext = context;
-
-//		try {
-//			socketClient = new Socket(ip,port);
-//			output = new ObjectOutputStream(socketClient.getOutputStream());
-//			input = new ObjectInputStream(socketClient.getInputStream());
-//			new Listener().start();
-
-//		}
-//		catch(IOException e)
-//		{
-//			e.printStackTrace();
-//		}
-
 		try{
 			new ConnectTask().execute();
 		} catch (Exception e){
@@ -73,26 +71,28 @@ public class Client extends AppCompatActivity {
 
 
 	}
+
+	/**
+	 * Saves user information
+	 */
 	public void setUser(User user){
 		this.user = user;
 	}
 
+	/**
+	 * Sends user info to server, server creates user
+	 */
 	public void createUser(User user) {
 		this.user = user;
-//		try {
-//			output.writeObject(user);
-//			output.flush();
-//		}
-//		catch(IOException e) {
-//			e.printStackTrace();
-//		}
-
 		try{
 			new CreateUserTask(user).execute();
 		} catch (Exception e){
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * Sends message info to server, server stores message
+	 */
 	public void sendMessage(Message message){
 		try{
 			new SendMessageTask(message).execute();
@@ -100,44 +100,54 @@ public class Client extends AppCompatActivity {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * Sends user info to server, server validates user
+	 */
 	public void login(User user){
 		this.user = user;
-//		try {
-//			output.writeObject(user);
-//		}
-//		catch(IOException e) {
-//			e.printStackTrace();
-//		}
 		try{
 			new LoginUserTask(user).execute();
 		} catch (Exception e){
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * Sends conversation info to server, server creates new chat
+	 */
 	public void getChat(Conversations convo){
 		try{
 			new SendConversationTask(convo).execute();
 		}
 		catch(Exception e){e.printStackTrace();}
 	}
-
+	/**
+	 * Sends a request to server, server sends a list with all existing users back
+	 */
 	public void getAllUsers(Context context){
 		try{
 			new GetAllUsersTask().execute();
 		}catch(Exception e){e.printStackTrace();}
 	}
+
+	/**
+	 * Sends a logout request to server, server disconnects client
+	 */
 	public void logOut(){
 		try{
 			new LogOutUserTask().execute();
 		}catch(Exception e){e.printStackTrace();}
 	}
-
+	/**
+	 * Sends NewChatInfo information to server, server stores new conversation
+	 */
 	public void createChat(NewChatInfo chatInfo){
 		try{
 			new CreateChatTask(chatInfo).execute();
 		}catch(Exception e){e.printStackTrace();}
 	}
-
+	/**
+	 * Sends Lock information to server, server verifies password
+	 */
 	public void verifyChatPassword(Lock lock){
 		try{
 			new VerifyChatPassword(lock).execute();
@@ -147,31 +157,8 @@ public class Client extends AppCompatActivity {
 	public String getUsername(){
 		return user.getUsername();
 	}
-
 	/**
-	 *
-	 * public void createButton(ArrayList<String> chatMembers){
-	 * 		String[] names;
-	 * 		LinearLayout layout;
-	 * 		setContentView(R.layout.fragment_chat);
-	 * 		for(String member : chatMembers){
-	 * 			names = member.split(":");
-	 * 			Button b = new Button(this);
-	 * 			for(String name : names){
-	 * 				b.append(name + ", ");
-	 *                        }
-	 * 			layout = (LinearLayout) findViewById(R.id.rootlayout);
-	 * 			layout.addView(b);
-	 *
-	 *
-	 * 			b.setOnClickListener(new View.OnClickListener() {
-	 *                @Override
-	 * 				public void onClick(View v) {
-	 * 					// vad som ska hända när man trycker på knapparna.
-	 * 				}
-	 * 			});
-	 * 		}
-	 * 	}
+	 * Decrypts an encrypted message
 	 */
 	private void decryptMessage(Message message) {
 		try {
@@ -189,8 +176,17 @@ public class Client extends AppCompatActivity {
 		}
 		catch ( Exception e){e.printStackTrace();}
 	}
+
+	/**
+	 * Listener class with thread, handles communication between client/server
+	 */
 	private class Listener extends Thread {
 		Intent chatIntent = new Intent(activityContext, ChattingActivity.class);
+		public void playMessageRecieved(){
+			Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+			MediaPlayer mp = MediaPlayer.create(activityContext, notification);
+			mp.start();
+		}
 		public void run() {
 		Object response;
 		try {
@@ -200,18 +196,30 @@ public class Client extends AppCompatActivity {
 					final Message message = (Message) response;
 					decryptMessage(message);
 
-
 					runOnUiThread(new Runnable(){
 
 						@Override
 						public void run() {
-							ChattingActivity.list.add(message.getSender() + ":" + message.getText());
+                            ArrayList<String> members = new ArrayList<>(ChattingActivity.getChatMembers());
+							ArrayList<String> recipients = new ArrayList<>(message.getRecipients());
+							recipients.add(message.getSender());
+							Collections.sort(members);
+							Collections.sort(recipients);
+                            if(user.getUsername().equals(message.getSender())) {
+                                ChattingActivity.list.add(message.getSender() + ":" + message.getText());
+                            }
+                            else if (members.equals(recipients)){
+								ChattingActivity.list.add(message.getSender() + ":" + message.getText());
+								if(!ChattingActivity.active) {
+                                    Toast.makeText(activityContext, "New message from " + message.getSender(), Toast.LENGTH_SHORT).show();
+                                    playMessageRecieved();
+                                }
+							}
 							if(ChattingActivity.chatAdapter != null) {
 								ChattingActivity.chatAdapter.notifyDataSetChanged();
 							}
 						}
 					});
-					//chatIntent.putExtra(txtMessage, "newMessage"); //Detta ska hända innan "getExtra" i chattingActivity när man trycker på "send" knappen
 				}
 				else if(response instanceof Boolean){
 					Boolean exists = (Boolean) response;
@@ -223,7 +231,6 @@ public class Client extends AppCompatActivity {
 						});
 					}
 					else{
-						// Öppna fönster blabla
 						SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activityContext);
 						Boolean hasLoggedIn = prefs.edit().putBoolean("hasLoggedIn", true).commit();
 						String[] users = new String[1];
@@ -231,7 +238,7 @@ public class Client extends AppCompatActivity {
 						activityContext.startActivity(new Intent(activityContext, MainActivity.class));
 					}
 				}
-				else if(response.equals("Failed")){		//funkar ej måste använda instace
+				else if(response.equals("Failed")){
 					runOnUiThread(new Runnable() {
 						public void run() {
 							Toast.makeText(activityContext, "Wrong username or password, please try again.", Toast.LENGTH_LONG).show();
@@ -271,8 +278,6 @@ public class Client extends AppCompatActivity {
 							CreateChatActivity createChatActivity = new CreateChatActivity();
 							createChatActivity.setData(users);
 							Intent intent = new Intent(activityContext, createChatActivity.getClass());
-							// för att uppdatera chattarna
-
 							activityContext.startActivity(intent);
 
 						}
@@ -287,7 +292,6 @@ public class Client extends AppCompatActivity {
 							public void run() {
 								if (CustomAdapter.ativeChat.isEnabled()) {
 									CustomAdapter.ativeChat.setEnabled(false);
-//									CustomAdapter.activeLockBtn.setBackground(getResources().getDrawable(R.drawable.baseline_lock_black_18dp));
 								} else {
 									CustomAdapter.ativeChat.setEnabled(true);
 									Drawable img = activityContext.getDrawable(R.drawable.baseline_lock_open_black_18dp);
@@ -298,27 +302,15 @@ public class Client extends AppCompatActivity {
 											Toast.makeText(activityContext, "Chat unlocked!", Toast.LENGTH_LONG).show();
 										}
 									});
-//								CustomAdapter.activeLockBtn.setBackground(getResources().getDrawable(R.drawable.baseline_lock_open_black_18dp));
 								}
-
-
 							}
 						});
 					}
-
-//					if(valid){
-//						CustomAdapter.ativeChat.setEnabled(true);
-//					}
-//					else {
-//						//felmeddelande
-//					}
 				}
-
 			}
 		} catch(IOException | ClassNotFoundException e) {e.printStackTrace();}
 	}
 	}
-
 	private class ConnectTask extends AsyncTask<String, String, String> {
 
 		private String resp;
@@ -328,8 +320,8 @@ public class Client extends AppCompatActivity {
 		protected String doInBackground(String... params) {
 			publishProgress("Sleeping..."); // Calls onProgressUpdate()
 			try {
-				String serverAddr =  "10.2.14.88";
-				socketClient = new Socket(serverAddr, 6666);
+				String serverAddr =  "192.168.1.22";
+				socketClient = new Socket(serverAddr, 6445);
 
 				output = new ObjectOutputStream(socketClient.getOutputStream());
 				input = new ObjectInputStream(socketClient.getInputStream());

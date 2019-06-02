@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 
 /**
+ * @author Sandra Smrekar
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link SearchFragment.OnFragmentInteractionListener} interface

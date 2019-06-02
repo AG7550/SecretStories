@@ -16,6 +16,10 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+/**
+ * @author Ali Menhem, Sandra Smrekar
+ * This class handles the display of chat bubbles
+ */
 public class ChatAdapter extends ArrayAdapter<String> {
     String[][] messages;
     String username;

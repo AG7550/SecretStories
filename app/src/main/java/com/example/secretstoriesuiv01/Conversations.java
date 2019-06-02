@@ -1,11 +1,16 @@
 package com.example.secretstoriesuiv01;
 
-import android.support.v7.app.AppCompatActivity;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ *
+ * @author Ali Menhem, Klara Rosengren
+ * This class holds the information about a conversation
+ *
+ */
 public class Conversations implements Serializable {
+
     private int chatID;
     private ArrayList<String> chatMembers;
     private ArrayList<String> conversation;
@@ -40,5 +45,4 @@ public class Conversations implements Serializable {
     public void setConversation(ArrayList<String> convo){
         this.conversation = convo;
     }
-
 }

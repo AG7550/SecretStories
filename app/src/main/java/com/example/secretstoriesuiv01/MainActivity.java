@@ -1,10 +1,15 @@
 package com.example.secretstoriesuiv01;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -21,6 +26,10 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+/**
+ * @author Ali Menhem, Sandra Smrekar, Klara Rosengren, Jerry Rosengren
+ * This is the main activity of the application which handles navigation and displays fragments
+ */
 public class MainActivity extends AppCompatActivity {
     private static String[] names;
     Dialog dialog;
@@ -89,15 +98,41 @@ public class MainActivity extends AppCompatActivity {
             });
 
             final Button logoutButton = (Button) findViewById(R.id.logoutButton);
-            logoutButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle("Confirm");
+            builder.setMessage("Are you sure you want to log out?");
+
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int which) {
+                    // Do nothing but close the dialog
                     if(LoginActivity.client != null){
-                       LoginActivity.client.logOut();
+                        LoginActivity.client.logOut();
                     }
                     else{
                         CreateAccountActivity.client.logOut();
                     }
+                    dialog.dismiss();
+                }
+            });
+
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    // Do nothing
+                    dialog.dismiss();
+                }
+            });
+
+            final AlertDialog alert = builder.create();
+            logoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    alert.show();
                 }
             });
 

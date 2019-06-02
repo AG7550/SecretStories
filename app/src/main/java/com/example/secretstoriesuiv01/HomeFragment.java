@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 
 /**
+ * @author Fredrik Johnson
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link HomeFragment.OnFragmentInteractionListener} interface

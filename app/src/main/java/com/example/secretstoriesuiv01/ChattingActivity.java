@@ -2,6 +2,9 @@ package com.example.secretstoriesuiv01;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -26,11 +29,15 @@ import java.util.Observer;
 
 import static android.app.PendingIntent.getActivity;
 
+/**
+ * @author Klara Rosengren, Ali Menhem, Jerry Rosengren
+ * Activity for chatting between users
+ */
 public class ChattingActivity extends AppCompatActivity{
-    private String username = "";
+    public static boolean active = false;
+    private static String username = "";
     private int chatID;
-    private ArrayList<String> chatMembers = new ArrayList<>();
-   // private String[] chat =  {"Ali:Hejsan:Sandra:Haaj"};              // test
+    private static ArrayList<String> chatMembers = new ArrayList<>();
     public static ArrayList<String> list = new ArrayList<>();
     public static ArrayAdapter<String> chatAdapter;
     private Intent intent;
@@ -67,25 +74,16 @@ public class ChattingActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 ArrayList<String> members = new ArrayList<String>();
-
-                String textMessage = tbxMessage.getText().toString();
-                Message message = new Message(textMessage, username, chatMembers, CreateChatActivity.convoID);
-                if(LoginActivity.client != null){
-                    LoginActivity.client.sendMessage(message);
-                    tbxMessage.getText().clear();
-                    //Resten måste hända efter klienten har fått objekt och gör "putExtra"
-                    //Bundle bundle = getIntent().getExtras();
-                    //String txtMessage = bundle.getString("newMessage");
-                    //list.add(username + ":" + txtMessage);
-                    //chatAdapter.notifyDataSetChanged();
-                }
-                else{
-                    CreateAccountActivity.client.sendMessage(message);
-                    tbxMessage.getText().clear();
-                    //Bundle bundle = getIntent().getExtras();
-                    //String txtMessage = bundle.getString("newMessage");
-                    //list.add(username + "" + txtMessage);
-                    //chatAdapter.notifyDataSetChanged();
+                if(!tbxMessage.getText().toString().isEmpty()) {
+                    String textMessage = tbxMessage.getText().toString();
+                    Message message = new Message(textMessage, username, chatMembers, CreateChatActivity.convoID);
+                    if (LoginActivity.client != null) {
+                        LoginActivity.client.sendMessage(message);
+                        tbxMessage.getText().clear();
+                    } else {
+                        CreateAccountActivity.client.sendMessage(message);
+                        tbxMessage.getText().clear();
+                    }
                 }
 
             }
@@ -98,22 +96,20 @@ public class ChattingActivity extends AppCompatActivity{
                 finish();
             }
         });
-
     }
-
-
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//
-//        // Inflate the layout for this fragment
-//        View v = inflater.inflate(R.layout.activity_chat, container, false);
-//        chatAdapter = new ChatAdapter(this, username, chat);
-//        ListView lvwUsers = (ListView) v.findViewById(R.id.messages_view);
-//        lvwUsers.setAdapter(chatAdapter);
-//
-//        return v;
-//
-//    }
-
-
+    public static ArrayList<String> getChatMembers(){
+        ArrayList<String> tempMembers = new ArrayList<>(chatMembers);
+        tempMembers.add(username);
+        return tempMembers;
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
+    }
 }

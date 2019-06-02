@@ -19,6 +19,10 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+/**
+ * @author Ali Menhem, Sandra Smrekar
+ * This class handlers the display of existing users in the app when a users wants to create a chat
+ */
 public class SearchAdapter extends ArrayAdapter<String> {
     String username;
     Context context;

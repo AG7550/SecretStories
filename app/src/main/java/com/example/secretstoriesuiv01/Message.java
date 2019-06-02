@@ -1,19 +1,23 @@
 package com.example.secretstoriesuiv01;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Date;
 
-
+/**
+ *
+ * @author Ali Menhem, Jerry Rosengren
+ * Class which holds information about a message and handles the encryption of a message
+ *
+ */
 public class Message implements Serializable {
-	private int key;
+	private int key; //Key to encrypt/decrypt
 	private String text;
-	private byte[] encryptedMessage;
 	private String sender;
+	private byte[] encryptedMessage;
 	private ArrayList<String> recipients;
-	private Date dateSent;
 
-	//If the user sends a message-object without a picture
 
 	public Message(String text, String sender, ArrayList<String> recipients, int key) {
 		this.text = text;
@@ -22,10 +26,6 @@ public class Message implements Serializable {
 		this.key = key;
 	}
 
-	//If the user sends a message-object with a picture
-	//public Message2(int id, String text, String sender, Object[] recipients) {
-	//	this(id, text, sender, recipients);
-	//}
 	public String getText() {
 		return text;
 	}
@@ -49,20 +49,6 @@ public class Message implements Serializable {
 	public void setRecipients(ArrayList<String> recipients) {
 		this.recipients = recipients;
 	}
-
-//	public ImageIcon getImage() {
-//		return image;
-//	}
-
-	//	public void setImage(ImageIcon image) {
-//		this.image = image;
-//	}
-	public void setDateSent(Date date) {
-		this.dateSent = dateSent;
-	}
-	public Date getDateSent(Date date) {
-		return dateSent;
-	}
 	public int getKey() {
 		return key;
 	}
@@ -75,6 +61,5 @@ public class Message implements Serializable {
 	public byte[] getEncryptedMessage(){
 		return encryptedMessage;
 	}
-
 
 }
