@@ -57,6 +57,24 @@ public class ConnectDB {
 		}
 		
 	}
+	public String decryptMessage(String message, int id) {
+		try {
+			byte[] encrypted = message.getBytes();
+			String key = String.valueOf(id);
+			for (int i = key.length(); i < 16; i++) {
+				key += "A";
+			}
+			Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
+			Cipher cipher = Cipher.getInstance("AES");
+			// encrypt the text
+			cipher.init(Cipher.DECRYPT_MODE, aesKey);
+            String decrypted = new String(cipher.doFinal(encrypted));
+            return decrypted;
+		}
+		catch ( Exception e){e.printStackTrace();}
+
+		return message;
+	}
 	public void insertContact(String username, String contact) { 
 		String contacts = "";
 		String query = "SELECT * FROM users";
@@ -80,9 +98,9 @@ public class ConnectDB {
 		 e.printStackTrace();
 		}
 	}
-	public ArrayList<String> getContacts(String username){
+	public String getChatPassword(String username){
 		ArrayList<String> contactList = new ArrayList<String>();
-		String contacts = "";
+		String chatPassword = "";
 		String query = "SELECT * FROM users";
 		
 		ResultSet rs;
@@ -91,14 +109,10 @@ public class ConnectDB {
 			rs = st.executeQuery(query);
 			while (rs.next()) {
 				if(rs.getString("username").equals(username)) {
-					contacts = rs.getString("contacts");
+					chatPassword = rs.getString("contacts");
 				}
 			}
-			String[] array = contacts.split(":");
-			for(String contact : array) {
-				contactList.add(contact);
-			}
-			return contactList;
+			return chatPassword;
 		} 
 		catch (Exception e) {
 
@@ -396,28 +410,10 @@ public class ConnectDB {
 		}
 		return key;
 	}
-	
 	public static void main(String[] args) {
-			try {
-		  String text = "Hello World";
-          String key = "Bar12345Bar12345"; // 128 bit key
-          // Create key and cipher
-          Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
-          Cipher cipher = Cipher.getInstance("AES");
-          // encrypt the text
-          cipher.init(Cipher.ENCRYPT_MODE, aesKey);
-          byte[] encrypted = cipher.doFinal(text.getBytes());
-          System.out.println(encrypted);
-          String s = new String(encrypted);
-          System.out.println(s);
-          System.out.println(s.getBytes());
-          
-			}
-	        catch(Exception e) 
-	        {
-	            e.printStackTrace();
-	        }
+		ConnectDB db = new ConnectDB();
 		
-	}
+		}
+	
 }
 
